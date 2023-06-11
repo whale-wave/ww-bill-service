@@ -2,10 +2,10 @@
 
 git pull
 pwd
-cd ../bill-frontend
+cd ../ww-bill-client
 pwd
 git pull
-cd ../bill-backend
+cd ../ww-bill-service
 
 docker-compose down
 docker-compose up --build -d

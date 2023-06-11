@@ -25,7 +25,7 @@ import { CheckInModule } from './modules/check-in/check-in.module';
         }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: __dirname + '/../../frontend/dist',
+      rootPath: __dirname + '/../../client/dist',
     }),
     AuthModule,
     UserModule,
