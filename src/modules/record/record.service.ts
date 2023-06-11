@@ -20,8 +20,8 @@ const typeMap = {
 };
 
 enum MoneyType {
-  INCOME = '+',
-  EXPEND = '-',
+  INCOME = 'add',
+  EXPEND = 'sub',
 }
 
 @Injectable()
