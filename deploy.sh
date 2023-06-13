@@ -1,10 +1,10 @@
 #!/bin/bash
 
-git pull
+git pull origin master
 pwd
 cd ../ww-bill-client
 pwd
-git pull
+git pull origin master
 cd ../ww-bill-service
 
 docker-compose down
