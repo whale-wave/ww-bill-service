@@ -1,5 +1,6 @@
 import * as dayjs from 'dayjs';
 import { math } from '../../../utils';
+import { RecordType } from '../../../types';
 
 export function calcEachMonthAmount(data) {
   const monthList = {};
@@ -14,9 +15,9 @@ export function calcEachMonthAmount(data) {
   const eachMonthAmount = Object.keys(monthList).reduce((pre, cur) => {
     pre[cur] = monthList[cur].reduce(
       (res, [type, amount]) => {
-        if (type === '-') {
+        if (type === RecordType.EXPEND) {
           res.expand = math.add(res.expand, amount).toNumber();
-        } else if (type === '+') {
+        } else if (type === RecordType.INCOME) {
           res.income = math.add(res.income, amount).toNumber();
         }
         return res;
