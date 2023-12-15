@@ -15,6 +15,7 @@ import { UserModule } from './modules/user/user.module';
 import { RecordModule } from './modules/record/record.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { CheckInModule } from './modules/check-in/check-in.module';
+import * as path from "path";
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { CheckInModule } from './modules/check-in/check-in.module';
         }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: __dirname + '/../../client/dist',
+      rootPath: path.resolve(__dirname, '../public'),
     }),
     AuthModule,
     UserModule,
