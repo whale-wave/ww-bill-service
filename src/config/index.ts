@@ -5,10 +5,13 @@ dotenv.config();
 const {
   SECRET,
   EMAIL_PASSWORD,
+  // OSS
+  // qi niu
   OSS_QI_NIU_BUCKET,
   OSS_QI_NIU_ACCESS_KEY,
   OSS_QI_NIU_SECRET_KEY,
   OSS_QI_NIU_DOMAIN,
+  // ali
   OSS_ALI_REGION,
   OSS_ALI_BUCKET,
   OSS_ALI_ACCESS_KEY_ID,
