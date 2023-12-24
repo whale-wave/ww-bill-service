@@ -12,8 +12,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build the Docker image
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_REGISTRY }}  
-          docker build -t ${{ secrets.DOCKER_REGISTRY }}/whale-wave/ww-bill/ww-bill-client:${{ github.ref_name }}
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_REPOSITORY }}  
+          docker build -t ${{ secrets.DOCKER_REPOSITORY }}/whale-wave/ww-bill/ww-bill-client:${{ github.ref_name }}
       # 登录阿里云
 #      - name: deploy aliyun
 #        uses: appleboy/ssh-action@master
