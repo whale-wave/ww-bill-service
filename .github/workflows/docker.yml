@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker-compose.yml
+          platforms: linux/amd64
           push: true
           tags: |
             ${{ secrets.DOCKER_REPOSITORY }}/whale-wave/ww-bill/ww-bill-service:${{ steps.get_version.outputs.version }}
