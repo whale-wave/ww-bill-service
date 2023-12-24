@@ -1,0 +1,35 @@
+name: deploy
+
+# 触发条件
+# 当有 tag 并是 docker 分支时触发
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - docker
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 构建镜像
+      - name: Build and push
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_REPOSITORY }}
+          tags: ${{ github.ref }}
+      # 登录阿里云
+#      - name: deploy aliyun
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          key: ${{ secrets.RSA_KEY }}
+#          port: ${{ secrets.PORT }}
+#          script: |
+#            ls
+#            cd whale-wave/ww-bill-service
+#            ./deploy.sh
