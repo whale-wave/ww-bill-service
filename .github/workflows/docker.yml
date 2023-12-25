@@ -32,3 +32,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_REPOSITORY }}/whale-wave/ww-bill/ww-bill-service:${{ steps.get_version.outputs.version }}
+            ${{ secrets.DOCKER_REPOSITORY }}/whale-wave/ww-bill/ww-bill-service:latest
