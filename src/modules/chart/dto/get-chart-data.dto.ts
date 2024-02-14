@@ -14,7 +14,7 @@ export enum GetChartDataDtoCategory {
 
 export class GetChartDataDto {
   @ApiProperty({
-    description: '类型',
+    description: '类型 (sub 支出 | add 收入)',
     enum: ['sub', 'add'],
     example: 'sub',
   })
@@ -31,7 +31,7 @@ export class GetChartDataDto {
   type: 'sub' | 'add';
 
   @ApiProperty({
-    description: '类别',
+    description: '类别 (week 按周 | month 按月 | year 按年)',
     enum: GetChartDataDtoCategory,
     example: 'week',
   })
