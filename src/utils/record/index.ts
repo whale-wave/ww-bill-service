@@ -261,7 +261,10 @@ export const getRecordGroupDataByYear = (
   return result;
 };
 
-export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
+export const getRecordGroupDataByMonth = (
+  recordMap: Map<number, any>,
+  categoryList: Category[],
+) => {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
   const result = yearKeys.reduce((res, year) => {
@@ -278,14 +281,17 @@ export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
     monthKeys.sort((a, b) => a - b);
 
     monthKeys.forEach((month) => {
+      const monthAllRecord = [] as Record[];
+
       const monthData = yearData.get(month);
 
       const monthItem = {
         type: 'month',
         value: month,
-        data: [] as any[],
-        average: '0',
         amount: 0,
+        average: '0',
+        data: [] as any[],
+        ranking: [] as any[],
       };
 
       const { monthDayList } = getMonthInfo(
@@ -305,6 +311,8 @@ export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
 
         if (dayDataList) {
           dayDataList.forEach((dayData) => {
+            monthAllRecord.push(dayData);
+
             dayItem.data.push(dayData);
             dayItem.amount = math
               .add(dayItem.amount, dayData.amount)
@@ -316,6 +324,9 @@ export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
             .toNumber();
         }
       });
+
+      // month ranking
+      monthItem.ranking = getRankingByCategory(monthAllRecord, categoryList);
 
       yearItem.data.push(monthItem);
       yearItem.amount = math.add(yearItem.amount, monthItem.amount).toNumber();
@@ -487,7 +498,7 @@ export const getRecordGroupData = (
     case GetChartDataDtoCategory.WEEK:
       return getRecordGroupDataByWeek(recordMap, categoryList);
     case GetChartDataDtoCategory.MONTH:
-      return getRecordGroupDataByMonth(recordMap);
+      return getRecordGroupDataByMonth(recordMap, categoryList);
     case GetChartDataDtoCategory.YEAR:
     default:
       return getRecordGroupDataByYear(recordMap, categoryList);

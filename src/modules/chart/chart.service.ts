@@ -1,3 +1,4 @@
+import { success } from './../../utils/response/index';
 import { Injectable } from '@nestjs/common';
 import {
   GetChartDataDto,
@@ -83,10 +84,9 @@ export class ChartService {
       },
     });
 
-    return getRecordGroupData(
-      recordList,
-      getChartDataDto.category,
-      categoryList,
+    return success(
+      getRecordGroupData(recordList, getChartDataDto.category, categoryList),
+      '获取图表数据成功',
     );
   }
 }
