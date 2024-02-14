@@ -250,6 +250,9 @@ export const getRecordGroupDataByYear = (
               .toNumber();
           });
         });
+
+        monthItem.data.sort((a, b) => Number(b.amount) - Number(a.amount));
+
         yearItem.amount = math
           .add(yearItem.amount, monthItem.amount)
           .toNumber();
@@ -335,6 +338,8 @@ export const getRecordGroupDataByMonth = (
               .add(dayItem.amount, dayData.amount)
               .toNumber();
           });
+
+          dayItem.data.sort((a, b) => Number(b.amount) - Number(a.amount));
 
           monthItem.amount = math
             .add(monthItem.amount, dayItem.amount)

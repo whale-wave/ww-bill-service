@@ -111,7 +111,7 @@ describe('record', () => {
 
             if (monthNo === 1) {
               month.amount = 2300;
-              month.data = [recordList[0], recordList[1]];
+              month.data = [recordList[1], recordList[0]];
             }
 
             return month;
