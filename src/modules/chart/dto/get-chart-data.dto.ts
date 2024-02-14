@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumberString } from 'class-validator';
 
 export enum GetChartDataDtoCategory {
   WEEK = 'week',
@@ -35,4 +35,11 @@ export class GetChartDataDto {
     message: 'category is invalid',
   })
   category: GetChartDataDtoCategory;
+
+  @ApiProperty({
+    description: '类别id',
+    example: 1,
+  })
+  @IsNumberString()
+  categoryId?: string;
 }

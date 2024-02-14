@@ -65,9 +65,11 @@ export class ChartService {
   }
 
   async getChartData(userId: number, getChartDataDto: GetChartDataDto) {
+    const { type, category, categoryId } = getChartDataDto;
+
     const recordList = await this.recordRepository.find({
       where: {
-        type: getChartDataDto.type,
+        type,
         user: {
           id: userId,
         },
@@ -77,15 +79,22 @@ export class ChartService {
 
     const categoryList = await this.categoryRepository.find({
       where: {
-        type: getChartDataDto.type,
+        type,
         user: {
           id: userId,
         },
       },
     });
 
+    let filterByCategory = undefined;
+    if (categoryId) {
+      filterByCategory = categoryList.find(
+        (item) => item.id === Number(categoryId),
+      );
+    }
+
     return success(
-      getRecordGroupData(recordList, getChartDataDto.category, categoryList),
+      getRecordGroupData(recordList, category, categoryList, filterByCategory),
       '获取图表数据成功',
     );
   }

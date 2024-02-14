@@ -13,9 +13,7 @@ export class ChartController {
   @ApiTags('chart')
   @ApiOperation({ summary: '获取图表数据' })
   @ApiBearerAuth('Token')
-  getChartData(@Req() req, @Query() query: GetChartDataDto) {
-    const { type, category } = query;
-
-    return this.chartService.getChartData(+req.user.id, { type, category });
+  getChartData(@Req() req, @Query() getChartDataDto: GetChartDataDto) {
+    return this.chartService.getChartData(+req.user.id, getChartDataDto);
   }
 }

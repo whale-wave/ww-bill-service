@@ -299,7 +299,7 @@ describe('record', () => {
     expect(groupData).toEqual(result);
   });
 
-  it('getRecordGroupData by week', () => {
+  describe('getRecordGroupData by week', () => {
     const recordList = [
       {
         time: new Date('2023-01-04 05:00:00'),
@@ -326,12 +326,6 @@ describe('record', () => {
         category: categoryMap[1],
       },
     ] as unknown as Record[];
-
-    const groupData = getRecordGroupData(
-      recordList,
-      GetChartDataDtoCategory.WEEK,
-      categoryList,
-    );
 
     const result = [
       {
@@ -458,6 +452,58 @@ describe('record', () => {
       },
     ];
 
-    expect(groupData).toEqual(result);
+    it('normal', () => {
+      const groupData = getRecordGroupData(
+        recordList,
+        GetChartDataDtoCategory.WEEK,
+        categoryList,
+      );
+
+      expect(groupData).toEqual(result);
+    });
+
+    it('filterByCategory', () => {
+      const groupData = getRecordGroupData(
+        recordList,
+        GetChartDataDtoCategory.WEEK,
+        categoryList,
+        categoryList[0],
+      );
+
+      // result[0]
+      result[0].data[0].ranking = [
+        { ...recordList[0], percentage: '100.0' },
+      ] as unknown as any[];
+      result[0].data[0].data = result[0].data[0].data.map((i) => {
+        if (i.value === '2023-01-04') {
+          i.data = [recordList[0]];
+        }
+        return i;
+      });
+      result[0].data[0].amount = 40;
+      result[0].data[0].average = '5.71';
+
+      result[0].data.length = 1;
+
+      result[0].amount = 40;
+
+      // result[1]
+      result[1].data[0].ranking = [
+        { ...recordList[3], percentage: '100.0' },
+      ] as unknown as any[];
+      result[1].data[0].data = result[1].data[0].data.map((i) => {
+        if (i.value === '2024-01-05') {
+          i.data = [recordList[3]];
+          i.amount = 10;
+        }
+        return i;
+      });
+      result[1].data[0].amount = 10;
+      result[1].data[0].average = '1.43';
+
+      result[1].amount = 10;
+
+      expect(groupData).toEqual(result);
+    });
   });
 });

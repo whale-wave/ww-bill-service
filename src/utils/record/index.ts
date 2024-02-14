@@ -8,36 +8,47 @@ import math from '../math';
 export const getRankingByCategory = (
   recordList: Record[],
   categoryList: Category[],
+  filterByCategory?: Category,
 ) => {
-  const categoryMap = new Map();
+  let rankingList = [] as any[];
 
-  categoryList.forEach((item) => {
-    categoryMap.set(item.id, item);
-  });
+  if (filterByCategory) {
+    rankingList = recordList.filter(
+      (r) => r.category.id === filterByCategory.id,
+    );
+  } else {
+    const categoryMap = new Map();
 
-  const rankingMap = new Map();
+    categoryList.forEach((item) => {
+      categoryMap.set(item.id, item);
+    });
 
-  recordList.forEach((record) => {
-    const categoryId = record.category.id;
+    const rankingMap = new Map();
 
-    if (!rankingMap.has(categoryId)) {
-      const category = categoryMap.get(categoryId);
-      rankingMap.set(categoryId, {
-        category: category,
-        type: category.type,
-        percentage: 0,
-        amount: 0,
-      });
-    }
+    recordList.forEach((record) => {
+      const categoryId = record.category.id;
 
-    const rankingItem = rankingMap.get(categoryId);
+      if (!rankingMap.has(categoryId)) {
+        const category = categoryMap.get(categoryId);
+        rankingMap.set(categoryId, {
+          category: category,
+          type: category.type,
+          percentage: 0,
+          amount: 0,
+        });
+      }
 
-    rankingItem.amount = math.add(rankingItem.amount, record.amount).toNumber();
-  });
+      const rankingItem = rankingMap.get(categoryId);
 
-  const rankingList = Array.from(rankingMap.values());
+      rankingItem.amount = math
+        .add(rankingItem.amount, record.amount)
+        .toNumber();
+    });
 
-  rankingList.sort((a, b) => b.amount - a.amount);
+    rankingList = Array.from(rankingMap.values());
+  }
+
+  rankingList.sort((a, b) => Number(b.amount) - Number(a.amount));
 
   // Calculate the percentage and keep one decimal places.
   const totalAmount = rankingList.reduce(
@@ -192,6 +203,7 @@ export const getRecordMap = (recordList: Record[]) => {
 export const getRecordGroupDataByYear = (
   recordMap: Map<number, any>,
   categoryList: Category[],
+  filterByCategory?: Category,
 ) => {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
@@ -245,7 +257,11 @@ export const getRecordGroupDataByYear = (
     });
 
     // year ranking
-    yearItem.ranking = getRankingByCategory(yearAllRecord, categoryList);
+    yearItem.ranking = getRankingByCategory(
+      yearAllRecord,
+      categoryList,
+      filterByCategory,
+    );
 
     // month average
     yearItem.average = math
@@ -264,6 +280,7 @@ export const getRecordGroupDataByYear = (
 export const getRecordGroupDataByMonth = (
   recordMap: Map<number, any>,
   categoryList: Category[],
+  filterCategory?: Category,
 ) => {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
@@ -326,7 +343,11 @@ export const getRecordGroupDataByMonth = (
       });
 
       // month ranking
-      monthItem.ranking = getRankingByCategory(monthAllRecord, categoryList);
+      monthItem.ranking = getRankingByCategory(
+        monthAllRecord,
+        categoryList,
+        filterCategory,
+      );
 
       yearItem.data.push(monthItem);
       yearItem.amount = math.add(yearItem.amount, monthItem.amount).toNumber();
@@ -351,6 +372,7 @@ export const getRecordGroupDataByMonth = (
 export const getRecordGroupDataByWeek = (
   recordMap: Map<number, any>,
   categoryList: Category[],
+  filterByCategory?: Category,
 ) => {
   const yearWeekDayDateMap = new Map();
 
@@ -467,7 +489,11 @@ export const getRecordGroupDataByWeek = (
       });
 
       // week ranking
-      weekItem.ranking = getRankingByCategory(weekAllRecord, categoryList);
+      weekItem.ranking = getRankingByCategory(
+        weekAllRecord,
+        categoryList,
+        filterByCategory,
+      );
 
       // week average
       weekItem.average = math
@@ -491,16 +517,37 @@ export const getRecordGroupData = (
   recordList: Record[],
   category: GetChartDataDtoCategory,
   categoryList: Category[],
+  filterByCategory?: Category,
 ) => {
-  const recordMap = getRecordMap(recordList);
+  let filterRecordList = recordList;
+
+  if (filterByCategory) {
+    filterRecordList = recordList.filter(
+      (r) => r.category.id === filterByCategory.id,
+    );
+  }
+
+  const recordMap = getRecordMap(filterRecordList);
 
   switch (category) {
     case GetChartDataDtoCategory.WEEK:
-      return getRecordGroupDataByWeek(recordMap, categoryList);
+      return getRecordGroupDataByWeek(
+        recordMap,
+        categoryList,
+        filterByCategory,
+      );
     case GetChartDataDtoCategory.MONTH:
-      return getRecordGroupDataByMonth(recordMap, categoryList);
+      return getRecordGroupDataByMonth(
+        recordMap,
+        categoryList,
+        filterByCategory,
+      );
     case GetChartDataDtoCategory.YEAR:
     default:
-      return getRecordGroupDataByYear(recordMap, categoryList);
+      return getRecordGroupDataByYear(
+        recordMap,
+        categoryList,
+        filterByCategory,
+      );
   }
 };
