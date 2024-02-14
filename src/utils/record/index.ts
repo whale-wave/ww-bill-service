@@ -1,3 +1,4 @@
+import { fillZero } from './../math';
 import * as dayjs from 'dayjs';
 import { Category } from '../../modules/category/entity/category.entity';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
@@ -52,6 +53,40 @@ export const getRankingByCategory = (
   });
 
   return rankingList;
+};
+
+export const getMonthInfo = (_d: Date) => {
+  // 复制日期，避免修改原始日期
+  const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
+
+  // 获取月份的第一天
+  const monthStart = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+
+  // 获取月份的最后一天
+  const monthEnd = new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0),
+  );
+
+  const monthDayMap = new Map<number, Date>();
+
+  for (let i = 1; i <= monthEnd.getDate(); i++) {
+    monthDayMap.set(
+      i,
+      new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), i)),
+    );
+  }
+
+  const monthDayList = Array.from(monthDayMap.keys());
+  monthDayList.sort((a, b) => a - b);
+
+  return {
+    year: d.getUTCFullYear(),
+    month: d.getUTCMonth() + 1,
+    monthStart,
+    monthEnd,
+    monthDayMap,
+    monthDayList,
+  };
 };
 
 export const getWeekInfo = (_d: Date) => {
@@ -208,32 +243,49 @@ export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
         type: 'month',
         value: month,
         data: [] as any[],
+        average: '0',
         amount: 0,
       };
 
-      dayKeys.forEach((day) => {
-        const dayDataList = monthData.get(day);
-
+      const { monthDayList } = getMonthInfo(
+        new Date(`${year}-${fillZero(month)}-01`),
+      );
+      monthDayList.forEach((day) => {
         const dayItem = {
           type: 'day',
-          value: day,
+          value: `${year}-${fillZero(month)}-${fillZero(day)}`,
           data: [] as any[],
           amount: 0,
         };
 
-        dayDataList.forEach((dayData) => {
-          dayItem.data.push(dayData);
-          dayItem.amount = math.add(dayItem.amount, dayData.amount).toNumber();
-        });
-
         monthItem.data.push(dayItem);
-        monthItem.amount = math
-          .add(monthItem.amount, dayItem.amount)
-          .toNumber();
+
+        const dayDataList = monthData.get(day);
+
+        if (dayDataList) {
+          dayDataList.forEach((dayData) => {
+            dayItem.data.push(dayData);
+            dayItem.amount = math
+              .add(dayItem.amount, dayData.amount)
+              .toNumber();
+          });
+
+          monthItem.amount = math
+            .add(monthItem.amount, dayItem.amount)
+            .toNumber();
+        }
       });
 
       yearItem.data.push(monthItem);
       yearItem.amount = math.add(yearItem.amount, monthItem.amount).toNumber();
+    });
+
+    // month average
+    yearItem.data.forEach((monthItem) => {
+      monthItem.average = math
+        .divide(monthItem.amount, monthItem.data.length)
+        .toNumber()
+        .toFixed(2);
     });
 
     res.push(yearItem);

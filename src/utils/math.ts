@@ -23,3 +23,7 @@ export default {
     return math.bignumber(num);
   },
 };
+
+export const fillZero = (num: number) => {
+  return num < 10 ? `0${num}` : num;
+};

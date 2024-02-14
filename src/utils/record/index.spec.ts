@@ -1,6 +1,6 @@
 import { Category } from './../../modules/category/entity/category.entity';
 import { Record } from '../../modules/record/entity/record.entity';
-import { getRecordGroupData } from './index';
+import { getMonthInfo, getRecordGroupData } from './index';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
 
 const categoryList = [
@@ -153,38 +153,50 @@ describe('record', () => {
             type: 'month',
             value: 4,
             amount: 140,
+            average: '4.67',
             data: [
-              {
-                type: 'day',
-                value: 21,
-                amount: 140,
-                data: [
-                  {
-                    time: new Date('2023-04-21'),
-                    type: 'sub',
-                    amount: '140',
-                  },
-                ],
-              },
+              ...getMonthInfo(
+                recordList[2].time as unknown as Date,
+              ).monthDayList.map((dayNo) => {
+                const day = {
+                  type: 'day',
+                  value: `2023-04-${dayNo < 10 ? `0${dayNo}` : dayNo}`,
+                  amount: 0,
+                  data: [],
+                };
+
+                if (dayNo === 21) {
+                  day.amount = 140;
+                  day.data = [recordList[2]];
+                }
+
+                return day;
+              }),
             ],
           },
           {
             type: 'month',
             value: 6,
             amount: 10,
+            average: '0.33',
             data: [
-              {
-                type: 'day',
-                value: 21,
-                amount: 10,
-                data: [
-                  {
-                    time: new Date('2023-06-21'),
-                    type: 'sub',
-                    amount: '10',
-                  },
-                ],
-              },
+              ...getMonthInfo(
+                recordList[3].time as unknown as Date,
+              ).monthDayList.map((dayNo) => {
+                const day = {
+                  type: 'day',
+                  value: `2023-06-${dayNo < 10 ? `0${dayNo}` : dayNo}`,
+                  amount: 0,
+                  data: [],
+                };
+
+                if (dayNo === 21) {
+                  day.amount = 10;
+                  day.data = [recordList[3]];
+                }
+
+                return day;
+              }),
             ],
           },
         ],
@@ -198,31 +210,28 @@ describe('record', () => {
             type: 'month',
             value: 1,
             amount: 2300,
+            average: '74.19',
             data: [
-              {
-                type: 'day',
-                value: 1,
-                amount: 1100,
-                data: [
-                  {
-                    time: new Date('2024-01-01'),
-                    type: 'sub',
-                    amount: '1100',
-                  },
-                ],
-              },
-              {
-                type: 'day',
-                value: 4,
-                amount: 1200,
-                data: [
-                  {
-                    time: new Date('2024-01-04'),
-                    type: 'sub',
-                    amount: '1200',
-                  },
-                ],
-              },
+              ...getMonthInfo(
+                recordList[0].time as unknown as Date,
+              ).monthDayList.map((dayNo) => {
+                const day = {
+                  type: 'day',
+                  value: `2024-01-${dayNo < 10 ? `0${dayNo}` : dayNo}`,
+                  amount: 0,
+                  data: [],
+                };
+
+                if (dayNo === 1) {
+                  day.amount = 1100;
+                  day.data = [recordList[0]];
+                } else if (dayNo === 4) {
+                  day.amount = 1200;
+                  day.data = [recordList[1]];
+                }
+
+                return day;
+              }),
             ],
           },
         ],
