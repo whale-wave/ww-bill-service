@@ -55,6 +55,30 @@ export const getRankingByCategory = (
   return rankingList;
 };
 
+export const getYearInfo = (_d: Date) => {
+  const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
+
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const yearEnd = new Date(Date.UTC(d.getUTCFullYear() + 1, 0, 0));
+
+  const yearMonthMap = new Map<number, Date>();
+
+  for (let i = 1; i <= 12; i++) {
+    yearMonthMap.set(i, new Date(Date.UTC(d.getUTCFullYear(), i - 1, 1)));
+  }
+
+  const yearMonthNoList = Array.from(yearMonthMap.keys());
+  yearMonthNoList.sort((a, b) => a - b);
+
+  return {
+    year: d.getUTCFullYear(),
+    yearStart,
+    yearEnd,
+    yearMonthMap,
+    yearMonthNoList,
+  };
+};
+
 export const getMonthInfo = (_d: Date) => {
   // 复制日期，避免修改原始日期
   const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
@@ -173,41 +197,50 @@ export const getRecordGroupDataByYear = (recordMap: Map<number, any>) => {
       type: 'year',
       value: year,
       data: [] as any[],
+      average: '0',
       amount: 0,
     };
 
     const yearData = recordMap.get(year);
-    const monthKeys = Array.from(yearData.keys()) as number[];
 
-    monthKeys.sort((a, b) => a - b);
-
-    monthKeys.forEach((month) => {
-      const monthData = yearData.get(month);
-      const dayKeys = Array.from(monthData.keys()) as number[];
-
-      dayKeys.sort((a, b) => a - b);
-
+    const { yearMonthNoList } = getYearInfo(new Date(`${year}-01-01`));
+    yearMonthNoList.forEach((month) => {
       const monthItem = {
         type: 'month',
-        value: month,
-        data: [] as any[],
+        value: `${year}-${fillZero(month)}`,
         amount: 0,
+        data: [] as any[],
       };
-
-      dayKeys.forEach((day) => {
-        const dayDataList = monthData.get(day);
-
-        dayDataList.forEach((dayData) => {
-          monthItem.data.push(dayData);
-          monthItem.amount = math
-            .add(monthItem.amount, dayData.amount)
-            .toNumber();
-        });
-      });
-
       yearItem.data.push(monthItem);
-      yearItem.amount = math.add(yearItem.amount, monthItem.amount).toNumber();
+
+      const monthData = yearData.get(month);
+
+      if (monthData) {
+        const dayKeys = Array.from(monthData.keys()) as number[];
+
+        dayKeys.sort((a, b) => a - b);
+
+        dayKeys.forEach((day) => {
+          const dayDataList = monthData.get(day);
+
+          dayDataList.forEach((dayData) => {
+            monthItem.data.push(dayData);
+            monthItem.amount = math
+              .add(monthItem.amount, dayData.amount)
+              .toNumber();
+          });
+        });
+        yearItem.amount = math
+          .add(yearItem.amount, monthItem.amount)
+          .toNumber();
+      }
     });
+
+    // month average
+    yearItem.average = math
+      .divide(yearItem.amount, yearItem.data.length)
+      .toNumber()
+      .toFixed(2);
 
     res.push(yearItem);
 
@@ -235,9 +268,6 @@ export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
 
     monthKeys.forEach((month) => {
       const monthData = yearData.get(month);
-      const dayKeys = Array.from(monthData.keys()) as number[];
-
-      dayKeys.sort((a, b) => a - b);
 
       const monthItem = {
         type: 'month',

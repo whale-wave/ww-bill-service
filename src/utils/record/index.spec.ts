@@ -1,6 +1,6 @@
 import { Category } from './../../modules/category/entity/category.entity';
 import { Record } from '../../modules/record/entity/record.entity';
-import { getMonthInfo, getRecordGroupData } from './index';
+import { getMonthInfo, getRecordGroupData, getYearInfo } from './index';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
 
 const categoryList = [
@@ -56,57 +56,55 @@ describe('record', () => {
       {
         type: 'year',
         value: 2023,
-        data: [
-          {
-            type: 'month',
-            value: 4,
-            data: [
-              {
-                time: new Date('2023-04-21'),
-                type: 'sub',
-                amount: '140',
-              },
-            ],
-            amount: 140,
-          },
-          {
-            type: 'month',
-            value: 6,
-            data: [
-              {
-                time: new Date('2023-06-21'),
-                type: 'sub',
-                amount: '10',
-              },
-            ],
-            amount: 10,
-          },
-        ],
         amount: 150,
+        average: '12.50',
+        data: [
+          ...getYearInfo(
+            recordList[2].time as unknown as Date,
+          ).yearMonthNoList.map((monthNo) => {
+            const month = {
+              type: 'month',
+              value: `2023-${monthNo < 10 ? `0${monthNo}` : monthNo}`,
+              amount: 0,
+              data: [],
+            };
+
+            if (monthNo === 4) {
+              month.amount = 140;
+              month.data = [recordList[2]];
+            } else if (monthNo === 6) {
+              month.amount = 10;
+              month.data = [recordList[3]];
+            }
+
+            return month;
+          }),
+        ],
       },
       {
         type: 'year',
         value: 2024,
-        data: [
-          {
-            type: 'month',
-            value: 1,
-            data: [
-              {
-                time: new Date('2024-01-01'),
-                type: 'sub',
-                amount: '1100',
-              },
-              {
-                time: new Date('2024-01-04'),
-                type: 'sub',
-                amount: '1200',
-              },
-            ],
-            amount: 2300,
-          },
-        ],
         amount: 2300,
+        average: '191.67',
+        data: [
+          ...getYearInfo(
+            recordList[0].time as unknown as Date,
+          ).yearMonthNoList.map((monthNo) => {
+            const month = {
+              type: 'month',
+              value: `2024-${monthNo < 10 ? `0${monthNo}` : monthNo}`,
+              amount: 0,
+              data: [],
+            };
+
+            if (monthNo === 1) {
+              month.amount = 2300;
+              month.data = [recordList[0], recordList[1]];
+            }
+
+            return month;
+          }),
+        ],
       },
     ];
 
