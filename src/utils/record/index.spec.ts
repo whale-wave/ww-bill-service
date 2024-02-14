@@ -28,21 +28,25 @@ describe('record', () => {
         time: new Date('2024-01-01'),
         type: 'sub',
         amount: '1100',
+        category: categoryMap[1],
       },
       {
         time: new Date('2024-01-04'),
         type: 'sub',
         amount: '1200',
+        category: categoryMap[8],
       },
       {
         time: new Date('2023-04-21'),
         type: 'sub',
         amount: '140',
+        category: categoryMap[8],
       },
       {
         time: new Date('2023-06-21'),
         type: 'sub',
         amount: '10',
+        category: categoryMap[8],
       },
     ] as unknown as Record[];
 
@@ -80,6 +84,14 @@ describe('record', () => {
             return month;
           }),
         ],
+        ranking: [
+          {
+            type: 'sub',
+            amount: 150,
+            percentage: '100.0',
+            category: categoryMap[8],
+          },
+        ],
       },
       {
         type: 'year',
@@ -104,6 +116,20 @@ describe('record', () => {
 
             return month;
           }),
+        ],
+        ranking: [
+          {
+            type: 'sub',
+            amount: 1200,
+            percentage: '52.2',
+            category: categoryMap[8],
+          },
+          {
+            type: 'sub',
+            amount: 1100,
+            percentage: '47.8',
+            category: categoryMap[1],
+          },
         ],
       },
     ];

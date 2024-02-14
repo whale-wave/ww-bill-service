@@ -189,16 +189,22 @@ export const getRecordMap = (recordList: Record[]) => {
   return recordMap;
 };
 
-export const getRecordGroupDataByYear = (recordMap: Map<number, any>) => {
+export const getRecordGroupDataByYear = (
+  recordMap: Map<number, any>,
+  categoryList: Category[],
+) => {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
   const result = yearKeys.reduce((res, year) => {
+    const yearAllRecord = [] as Record[];
+
     const yearItem = {
       type: 'year',
       value: year,
-      data: [] as any[],
-      average: '0',
       amount: 0,
+      average: '0',
+      data: [] as any[],
+      ranking: [] as any[],
     };
 
     const yearData = recordMap.get(year);
@@ -224,6 +230,8 @@ export const getRecordGroupDataByYear = (recordMap: Map<number, any>) => {
           const dayDataList = monthData.get(day);
 
           dayDataList.forEach((dayData) => {
+            yearAllRecord.push(dayData);
+
             monthItem.data.push(dayData);
             monthItem.amount = math
               .add(monthItem.amount, dayData.amount)
@@ -235,6 +243,9 @@ export const getRecordGroupDataByYear = (recordMap: Map<number, any>) => {
           .toNumber();
       }
     });
+
+    // year ranking
+    yearItem.ranking = getRankingByCategory(yearAllRecord, categoryList);
 
     // month average
     yearItem.average = math
@@ -478,8 +489,7 @@ export const getRecordGroupData = (
     case GetChartDataDtoCategory.MONTH:
       return getRecordGroupDataByMonth(recordMap);
     case GetChartDataDtoCategory.YEAR:
-      return getRecordGroupDataByYear(recordMap);
     default:
-      return getRecordGroupDataByYear(recordMap);
+      return getRecordGroupDataByYear(recordMap, categoryList);
   }
 };
