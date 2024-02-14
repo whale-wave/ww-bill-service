@@ -1,5 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumberString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+} from 'class-validator';
 
 export enum GetChartDataDtoCategory {
   WEEK = 'week',
@@ -36,10 +41,11 @@ export class GetChartDataDto {
   })
   category: GetChartDataDtoCategory;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '类别id',
     example: 1,
   })
   @IsNumberString()
+  @IsOptional()
   categoryId?: string;
 }
