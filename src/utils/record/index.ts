@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 import { Category } from '../../modules/category/entity/category.entity';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
 import { Record } from '../../modules/record/entity/record.entity';
@@ -53,7 +54,7 @@ export const getRankingByCategory = (
   return rankingList;
 };
 
-export const getWeekNumber = (_d: Date) => {
+export const getWeekInfo = (_d: Date) => {
   // 复制日期，避免修改原始日期
   const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
 
@@ -73,10 +74,29 @@ export const getWeekNumber = (_d: Date) => {
     ((d.getTime() - yearStart.getTime()) / ONE_DAY_IN_MS + 1) / 7,
   );
 
-  // 返回年份和周数数组
+  const weekStartDay = new Date(
+    d.getTime() - (d.getUTCDay() - 1) * ONE_DAY_IN_MS,
+  );
+  const weekEndDay = new Date(
+    d.getTime() + (7 - d.getUTCDay()) * ONE_DAY_IN_MS,
+  );
+
+  const weekDayNoList = [];
+  const weekDayNoDateMap = new Map<number, Date>();
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(weekStartDay.getTime() + i * ONE_DAY_IN_MS);
+    const dayNo = date.getDate();
+    weekDayNoList.push(dayNo);
+    weekDayNoDateMap.set(dayNo, date);
+  }
+
   return {
     year: d.getUTCFullYear(),
     week: weekNo,
+    weekStartDay,
+    weekEndDay,
+    weekDayNoList,
+    weekDayNoDateMap,
   };
 };
 
@@ -228,6 +248,8 @@ export const getRecordGroupDataByWeek = (
   recordMap: Map<number, any>,
   categoryList: Category[],
 ) => {
+  const yearWeekDayDateMap = new Map();
+
   const yearWeekMap = new Map();
 
   const yearKeys = Array.from(recordMap.keys());
@@ -247,9 +269,21 @@ export const getRecordGroupDataByWeek = (
         const dayData = monthData.get(day);
 
         dayData.forEach((item) => {
-          const { year: yearNo, week: weekNo } = getWeekNumber(
-            new Date(item.time),
-          );
+          const {
+            year: yearNo,
+            week: weekNo,
+            weekDayNoList,
+            weekDayNoDateMap,
+          } = getWeekInfo(new Date(item.time));
+
+          if (!yearWeekDayDateMap.has(yearNo)) {
+            yearWeekDayDateMap.set(yearNo, new Map());
+          }
+          const yearWeekDayMap = yearWeekDayDateMap.get(yearNo);
+          if (!yearWeekDayMap.has(weekNo)) {
+            yearWeekDayMap.set(weekNo, new Map());
+          }
+          const weekDayDateMap = yearWeekDayMap.get(weekNo);
 
           if (!yearWeekMap.has(yearNo)) {
             yearWeekMap.set(yearNo, new Map());
@@ -263,9 +297,12 @@ export const getRecordGroupDataByWeek = (
 
           const dayMap = weekDayMap.get(weekNo);
 
-          if (!dayMap.has(day)) {
-            dayMap.set(day, []);
-          }
+          weekDayNoList.forEach((dayNo) => {
+            weekDayDateMap.set(dayNo, weekDayNoDateMap.get(dayNo));
+            if (!dayMap.has(dayNo)) {
+              dayMap.set(dayNo, []);
+            }
+          });
 
           dayMap.get(day).push(item);
         });
@@ -292,6 +329,7 @@ export const getRecordGroupDataByWeek = (
         type: 'week',
         value: week,
         amount: 0,
+        average: '0',
         data: [],
         ranking: [] as any[],
       };
@@ -303,14 +341,16 @@ export const getRecordGroupDataByWeek = (
       dayKeys.sort((a, b) => a - b);
 
       dayKeys.forEach((day) => {
-        const weekDataList = dayMap.get(day);
-        weekDataList.sort((a, b) => Number(b.amount) - Number(a.amount));
+        const dayList = dayMap.get(day);
+        dayList.sort((a, b) => Number(b.amount) - Number(a.amount));
 
         const dayItem = {
           type: 'day',
-          value: day,
-          data: weekDataList,
-          amount: weekDataList.reduce(
+          value: dayjs(yearWeekDayDateMap.get(year).get(week).get(day)).format(
+            'YYYY-MM-DD',
+          ),
+          data: dayList,
+          amount: dayList.reduce(
             (acc, cur) => math.add(acc, cur.amount).toNumber(),
             0,
           ),
@@ -319,11 +359,17 @@ export const getRecordGroupDataByWeek = (
         weekItem.data.push(dayItem);
         weekItem.amount = math.add(weekItem.amount, dayItem.amount).toNumber();
 
-        weekAllRecord.push(...weekDataList);
+        weekAllRecord.push(...dayList);
       });
 
       // week ranking
       weekItem.ranking = getRankingByCategory(weekAllRecord, categoryList);
+
+      // week average
+      weekItem.average = math
+        .divide(weekItem.amount, weekItem.data.length)
+        .toNumber()
+        .toFixed(2);
 
       yearItem.data.push(weekItem);
       yearItem.amount = math.add(yearItem.amount, weekItem.amount).toNumber();

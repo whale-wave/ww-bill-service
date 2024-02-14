@@ -266,8 +266,6 @@ describe('record', () => {
       categoryList,
     );
 
-    console.log(JSON.stringify(groupData, null, 2))
-
     const result = [
       {
         type: 'year',
@@ -278,13 +276,26 @@ describe('record', () => {
             type: 'week',
             value: 1,
             amount: 40,
+            average: '5.71',
             data: [
+              ...[2, 3].map((i) => ({
+                type: 'day',
+                value: `2023-01-0${i}`,
+                amount: 0,
+                data: [],
+              })),
               {
                 type: 'day',
-                value: 4,
+                value: `2023-01-04`,
                 amount: 40,
                 data: [recordList[0]],
               },
+              ...[5, 6, 7, 8].map((i) => ({
+                type: 'day',
+                value: `2023-01-0${i}`,
+                amount: 0,
+                data: [],
+              })),
             ],
             ranking: [
               {
@@ -299,13 +310,26 @@ describe('record', () => {
             type: 'week',
             value: 2,
             amount: 60,
+            average: '8.57',
             data: [
+              ...[9].map((i) => ({
+                type: 'day',
+                value: `2023-01-0${i}`,
+                amount: 0,
+                data: [],
+              })),
               {
                 type: 'day',
-                value: 10,
+                value: `2023-01-10`,
                 amount: 60,
                 data: [recordList[1]],
               },
+              ...[11, 12, 13, 14, 15].map((i) => ({
+                type: 'day',
+                value: `2023-01-${i}`,
+                amount: 0,
+                data: [],
+              })),
             ],
             ranking: [
               {
@@ -327,13 +351,26 @@ describe('record', () => {
             type: 'week',
             value: 1,
             amount: 100,
+            average: '14.29',
             data: [
+              ...['01', '02', '03', '04'].map((i) => ({
+                type: 'day',
+                value: `2024-01-${i}`,
+                amount: 0,
+                data: [],
+              })),
               {
                 type: 'day',
-                value: 5,
+                value: `2024-01-05`,
                 amount: 100,
                 data: [recordList[2], recordList[3]],
               },
+              ...['06', '07'].map((i) => ({
+                type: 'day',
+                value: `2024-01-${i}`,
+                amount: 0,
+                data: [],
+              })),
             ],
             ranking: [
               {
