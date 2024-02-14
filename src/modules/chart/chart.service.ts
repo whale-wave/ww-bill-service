@@ -7,12 +7,15 @@ import { Record } from '../record/entity/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { getRecordGroupData } from 'src/utils/record';
+import { Category } from '../category/entity/category.entity';
 
 @Injectable()
 export class ChartService {
   constructor(
     @InjectRepository(Record)
     private recordRepository: Repository<Record>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
   ) {}
 
   async getChartCategoryItemList(
@@ -68,8 +71,22 @@ export class ChartService {
           id: userId,
         },
       },
+      relations: ['category'],
     });
 
-    return getRecordGroupData(recordList, getChartDataDto.category);
+    const categoryList = await this.categoryRepository.find({
+      where: {
+        type: getChartDataDto.type,
+        user: {
+          id: userId,
+        },
+      },
+    });
+
+    return getRecordGroupData(
+      recordList,
+      getChartDataDto.category,
+      categoryList,
+    );
   }
 }

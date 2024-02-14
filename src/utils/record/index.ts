@@ -1,6 +1,57 @@
+import { Category } from '../../modules/category/entity/category.entity';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
 import { Record } from '../../modules/record/entity/record.entity';
 import math from '../math';
+
+export const getRankingByCategory = (
+  recordList: Record[],
+  categoryList: Category[],
+) => {
+  const categoryMap = new Map();
+
+  categoryList.forEach((item) => {
+    categoryMap.set(item.id, item);
+  });
+
+  const rankingMap = new Map();
+
+  recordList.forEach((record) => {
+    const categoryId = record.category.id;
+
+    if (!rankingMap.has(categoryId)) {
+      const category = categoryMap.get(categoryId);
+      rankingMap.set(categoryId, {
+        category: category,
+        type: category.type,
+        percentage: 0,
+        amount: 0,
+      });
+    }
+
+    const rankingItem = rankingMap.get(categoryId);
+
+    rankingItem.amount = math.add(rankingItem.amount, record.amount).toNumber();
+  });
+
+  const rankingList = Array.from(rankingMap.values());
+
+  rankingList.sort((a, b) => b.amount - a.amount);
+
+  // Calculate the percentage and keep one decimal places.
+  const totalAmount = rankingList.reduce(
+    (acc, cur) => math.add(acc, cur.amount).toNumber(),
+    0,
+  );
+
+  rankingList.forEach((item) => {
+    item.percentage = math
+      .multiply(math.divide(item.amount, totalAmount), 100)
+      .toNumber()
+      .toFixed(1);
+  });
+
+  return rankingList;
+};
 
 export const getWeekNumber = (_d: Date) => {
   // 复制日期，避免修改原始日期
@@ -173,7 +224,10 @@ export const getRecordGroupDataByMonth = (recordMap: Map<number, any>) => {
   return result;
 };
 
-export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
+export const getRecordGroupDataByWeek = (
+  recordMap: Map<number, any>,
+  categoryList: Category[],
+) => {
   const yearWeekMap = new Map();
 
   const yearKeys = Array.from(recordMap.keys());
@@ -237,9 +291,12 @@ export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
       const weekItem = {
         type: 'week',
         value: week,
-        data: [],
         amount: 0,
+        data: [],
+        ranking: [] as any[],
       };
+
+      const weekAllRecord = [] as Record[];
 
       const dayMap = weekDayMap.get(week);
       const dayKeys = Array.from(dayMap.keys()) as number[];
@@ -247,9 +304,7 @@ export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
 
       dayKeys.forEach((day) => {
         const weekDataList = dayMap.get(day);
-        weekDataList.sort(
-          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
-        );
+        weekDataList.sort((a, b) => Number(b.amount) - Number(a.amount));
 
         const dayItem = {
           type: 'day',
@@ -263,7 +318,12 @@ export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
 
         weekItem.data.push(dayItem);
         weekItem.amount = math.add(weekItem.amount, dayItem.amount).toNumber();
+
+        weekAllRecord.push(...weekDataList);
       });
+
+      // week ranking
+      weekItem.ranking = getRankingByCategory(weekAllRecord, categoryList);
 
       yearItem.data.push(weekItem);
       yearItem.amount = math.add(yearItem.amount, weekItem.amount).toNumber();
@@ -280,12 +340,13 @@ export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
 export const getRecordGroupData = (
   recordList: Record[],
   category: GetChartDataDtoCategory,
+  categoryList: Category[],
 ) => {
   const recordMap = getRecordMap(recordList);
 
   switch (category) {
     case GetChartDataDtoCategory.WEEK:
-      return getRecordGroupDataByWeek(recordMap);
+      return getRecordGroupDataByWeek(recordMap, categoryList);
     case GetChartDataDtoCategory.MONTH:
       return getRecordGroupDataByMonth(recordMap);
     case GetChartDataDtoCategory.YEAR:
