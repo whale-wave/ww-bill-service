@@ -201,13 +201,19 @@ export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
             yearWeekMap.set(yearNo, new Map());
           }
 
-          const yearWeekData = yearWeekMap.get(yearNo);
+          const weekDayMap = yearWeekMap.get(yearNo);
 
-          if (!yearWeekData.has(weekNo)) {
-            yearWeekData.set(weekNo, []);
+          if (!weekDayMap.has(weekNo)) {
+            weekDayMap.set(weekNo, new Map());
           }
 
-          yearWeekData.get(weekNo).push(item);
+          const dayMap = weekDayMap.get(weekNo);
+
+          if (!dayMap.has(day)) {
+            dayMap.set(day, []);
+          }
+
+          dayMap.get(day).push(item);
         });
       });
     });
@@ -223,26 +229,41 @@ export const getRecordGroupDataByWeek = (recordMap: Map<number, any>) => {
       amount: 0,
     };
 
-    const weekData = yearWeekMap.get(year);
-    const weekKeys = Array.from(weekData.keys()) as number[];
+    const weekDayMap = yearWeekMap.get(year);
+    const weekKeys = Array.from(weekDayMap.keys()) as number[];
     weekKeys.sort((a, b) => a - b);
 
     weekKeys.forEach((week) => {
-      const weekDataList = weekData.get(week);
-
-      weekDataList.sort(
-        (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
-      );
-
       const weekItem = {
         type: 'week',
         value: week,
-        data: weekDataList,
-        amount: weekDataList.reduce(
-          (sum, cur) => math.add(sum, cur.amount).toNumber(),
-          0,
-        ),
+        data: [],
+        amount: 0,
       };
+
+      const dayMap = weekDayMap.get(week);
+      const dayKeys = Array.from(dayMap.keys()) as number[];
+      dayKeys.sort((a, b) => a - b);
+
+      dayKeys.forEach((day) => {
+        const weekDataList = dayMap.get(day);
+        weekDataList.sort(
+          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+        );
+
+        const dayItem = {
+          type: 'day',
+          value: day,
+          data: weekDataList,
+          amount: weekDataList.reduce(
+            (acc, cur) => math.add(acc, cur.amount).toNumber(),
+            0,
+          ),
+        };
+
+        weekItem.data.push(dayItem);
+        weekItem.amount = math.add(weekItem.amount, dayItem.amount).toNumber();
+      });
 
       yearItem.data.push(weekItem);
       yearItem.amount = math.add(yearItem.amount, weekItem.amount).toNumber();

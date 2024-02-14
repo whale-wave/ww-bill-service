@@ -224,9 +224,14 @@ describe('record', () => {
         amount: '100',
       },
       {
-        time: new Date('2024-01-06'),
+        time: new Date('2024-01-06 06:00:00'),
         type: 'sub',
         amount: '1100',
+      },
+      {
+        time: new Date('2024-01-06 08:00:00'),
+        type: 'sub',
+        amount: '50',
       },
       {
         time: new Date('2024-01-04'),
@@ -262,14 +267,28 @@ describe('record', () => {
             amount: 300,
             data: [
               {
-                time: new Date('2023-01-06'),
-                type: 'sub',
-                amount: '200',
+                type: 'day',
+                value: 5,
+                amount: 100,
+                data: [
+                  {
+                    time: new Date('2023-01-05'),
+                    type: 'sub',
+                    amount: '100',
+                  },
+                ],
               },
               {
-                time: new Date('2023-01-05'),
-                type: 'sub',
-                amount: '100',
+                type: 'day',
+                value: 6,
+                amount: 200,
+                data: [
+                  {
+                    time: new Date('2023-01-06'),
+                    type: 'sub',
+                    amount: '200',
+                  },
+                ],
               },
             ],
           },
@@ -279,14 +298,28 @@ describe('record', () => {
             amount: 150,
             data: [
               {
-                time: new Date('2023-01-11'),
-                type: 'sub',
-                amount: '10',
+                type: 'day',
+                value: 10,
+                amount: 140,
+                data: [
+                  {
+                    time: new Date('2023-01-10'),
+                    type: 'sub',
+                    amount: '140',
+                  },
+                ],
               },
               {
-                time: new Date('2023-01-10'),
-                type: 'sub',
-                amount: '140',
+                type: 'day',
+                value: 11,
+                amount: 10,
+                data: [
+                  {
+                    time: new Date('2023-01-11'),
+                    type: 'sub',
+                    amount: '10',
+                  },
+                ],
               },
             ],
           },
@@ -295,22 +328,41 @@ describe('record', () => {
       {
         type: 'year',
         value: 2024,
-        amount: 2300,
+        amount: 2350,
         data: [
           {
             type: 'week',
             value: 1,
-            amount: 2300,
+            amount: 2350,
             data: [
               {
-                time: new Date('2024-01-06'),
-                type: 'sub',
-                amount: '1100',
+                type: 'day',
+                value: 4,
+                amount: 1200,
+                data: [
+                  {
+                    time: new Date('2024-01-04'),
+                    type: 'sub',
+                    amount: '1200',
+                  },
+                ],
               },
               {
-                time: new Date('2024-01-04'),
-                type: 'sub',
-                amount: '1200',
+                type: 'day',
+                value: 6,
+                amount: 1150,
+                data: [
+                  {
+                    time: new Date('2024-01-06 08:00:00'),
+                    type: 'sub',
+                    amount: '50',
+                  },
+                  {
+                    time: new Date('2024-01-06 06:00:00'),
+                    type: 'sub',
+                    amount: '1100',
+                  },
+                ],
               },
             ],
           },
