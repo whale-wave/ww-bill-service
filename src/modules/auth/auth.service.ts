@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { throwFail, validateNumber, validatePassword } from '../../utils';
+import {
+  generateNumber,
+  throwFail,
+  validateNumber,
+  validatePassword,
+} from '../../utils';
 import { UserService } from '../user/user.service';
 import { SignDto } from './dto/auth.dto';
 
@@ -16,21 +21,38 @@ export class AuthService {
   }
 
   async sign(signDto: SignDto) {
-    const { username, password, email } = signDto;
-    const userEntry = await this.usersService.findOneByName(username);
-    if (userEntry) throwFail('账号已经注册');
+    const { password, email } = signDto;
+    let { username } = signDto;
+
+    if (username) {
+      if (!validateNumber(username)) throwFail('账号必须为数字');
+
+      const userEntry = await this.usersService.findOneByUserName(username);
+      if (userEntry) throwFail('账号已经注册');
+    } else {
+      const genNum = generateNumber(10);
+      username = genNum.toString();
+      while (await this.usersService.findOneByUserName(username)) {
+        username = generateNumber(10).toString();
+      }
+    }
+
+    if (password && !validatePassword(password)) throwFail('密码必须为8-20位');
+
     const emailEntry = await this.usersService.findOneByEmail(email);
     if (emailEntry) throwFail('邮箱已经注册');
 
-    if (!validateNumber(username)) throwFail('账号必须为数字');
-    if (!validatePassword(password)) throwFail('密码必须为8-20位');
+    const { id } = await this.usersService.create({
+      email,
+      username,
+      password,
+    });
 
-    const { id } = await this.usersService.create(signDto);
     return { token: this.jwtService.sign({ username, id }), id };
   }
 
   async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.findOneByName(username);
+    const user = await this.usersService.findOneByUserName(username);
     if (user && user.password === password) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;

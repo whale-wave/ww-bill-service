@@ -5,6 +5,7 @@ export * from './response';
 export * from './upload';
 export * from './validation';
 export * from './queryBuilderHelper';
+export * from './auth';
 
 export const getFileHash = (file) => {
   const hashSum = crypto.createHash('sha256');

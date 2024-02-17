@@ -19,17 +19,17 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
-  name: string;
+  @Column({ default: '神奇海螺' })
+  name?: string;
 
   @Column({ unique: true, nullable: false })
   username: string;
 
-  @Column({ nullable: false, select: false })
+  @Column({ select: false })
   password: string;
 
   @Column({ default: true, select: false })
-  isActive: boolean;
+  isActive?: boolean;
 
   @Column()
   email: string;
@@ -38,35 +38,35 @@ export class User {
     default:
       'https://bill-rearend.oss-cn-guangzhou.aliyuncs.com/static/defulatAvatar.jpg',
   })
-  avatar: string;
+  avatar?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @OneToMany('Topic', 'user')
-  topics: Topic[];
+  topics?: Topic[];
 
   @OneToMany('TopicLike', 'user')
-  topicLikes: TopicLike[];
+  topicLikes?: TopicLike[];
 
   @OneToMany('Record', 'user')
-  records: Record[];
+  records?: Record[];
 
   @OneToMany('Category', 'user')
-  category: Category[];
+  category?: Category[];
 
   @OneToMany('Comment', 'user')
-  comments: Comment[];
+  comments?: Comment[];
 
   @OneToMany('CheckIn', 'user')
-  checkIns: CheckIn[];
+  checkIns?: CheckIn[];
 
   @OneToMany('Follow', 'user')
-  follows: Follow[];
+  follows?: Follow[];
 
   @OneToMany('SystemNotify', 'user')
-  systemNotifies: SystemNotify[];
+  systemNotifies?: SystemNotify[];
 }

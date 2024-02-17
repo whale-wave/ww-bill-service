@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createDefaultCategory } from 'src/utils/createDefaultCategory';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { throwFail } from '../../utils';
-import { SignDto } from '../auth/dto/auth.dto';
 import { UpdatePasswordDto, UpdateUserInfoDto } from './dto/user.dto';
 import { User } from './entity/user.entity';
 
@@ -18,7 +17,7 @@ export class UserService {
     return this.usersRepository.findOne(userId);
   }
 
-  findOneByName(username: string) {
+  findOneByUserName(username: string) {
     return this.usersRepository.findOne({
       where: { username },
       select: ['password', 'id', 'username'],
@@ -29,7 +28,7 @@ export class UserService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  create(user: SignDto): Promise<User> {
+  create(user: DeepPartial<User>): Promise<User> {
     return this.usersRepository.save(user);
   }
 
