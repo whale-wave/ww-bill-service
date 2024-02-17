@@ -35,7 +35,9 @@ export class ToolsController {
   ) {
     const { email } = getEmailCaptchaDto;
 
-    if (await this.userService.findOneByEmail(email)) return fail('邮箱已经注册');
+    if (await this.userService.findOneByEmail(email)) {
+      return fail('邮箱已经注册');
+    }
 
     const captcha = this.toolsService.svgCaptcha();
     const emailCode = captcha.text.toLowerCase();

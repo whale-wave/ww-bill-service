@@ -51,7 +51,10 @@ export class AuthService {
     return { token: this.jwtService.sign({ username, id }), id };
   }
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async _validateUserByUsernameAndPassword(
+    username: string,
+    password: string,
+  ): Promise<any> {
     const user = await this.usersService.findOneByUserName(username);
     if (user && user.password === password) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,6 +62,41 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  async validateUserByUsernameAndPassword(
+    username: string,
+    password: string,
+  ): Promise<any> {
+    const user = await this.usersService.findOneByUserName(username);
+
+    if (!user || user.password !== password) {
+      throwFail('账号或密码错误');
+    }
+
+    const { password: _, ...result } = user;
+
+    return result;
+  }
+
+  async validateUserByEmailAndEmailCode(
+    email: string,
+    emailCode?: string,
+    correctEmailCode?: string,
+  ): Promise<any> {
+    const user = await this.usersService.findOneByEmail(email);
+
+    if (!user) {
+      throwFail('邮箱未注册');
+    }
+
+    if (!correctEmailCode || !emailCode || emailCode !== correctEmailCode) {
+      throwFail('验证码错误');
+    }
+
+    const { password: _, ...result } = user;
+
+    return result;
   }
 
   async createDefaultCategory(userId: string) {

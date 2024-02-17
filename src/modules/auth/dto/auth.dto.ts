@@ -5,7 +5,84 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  registerDecorator,
 } from 'class-validator';
+
+@ValidatorConstraint({ async: true })
+export class IsRequiredConstraint implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const object = args.object as any;
+
+    const [requiredFields, notRequiredFields, judgmentFn] = args.constraints;
+
+    for (const field of requiredFields) {
+      if (Object.keys(object).includes(field)) {
+        return judgmentFn(value);
+      }
+    }
+
+    for (const field of notRequiredFields) {
+      if (!Object.keys(object).includes(field)) {
+        return judgmentFn(value);
+      }
+    }
+
+    return true;
+  }
+}
+
+export function IsFieldJudgment(
+  requiredFields: string[] = [],
+  notRequiredFields: string[] = [],
+  judgmentFn: (value: any) => boolean,
+  validationOptions?: ValidationOptions,
+) {
+  return function (object: Record<string, any>, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [requiredFields, notRequiredFields, judgmentFn],
+      validator: IsRequiredConstraint,
+    });
+  };
+}
+
+export const IsStringByField = (
+  validationOptions: ValidationOptions,
+  requiredFields: string[] = [],
+  notRequiredFields: string[] = [],
+) => {
+  return IsFieldJudgment(
+    requiredFields,
+    notRequiredFields,
+    (value) => typeof value === 'string',
+    {
+      message: '类型错误',
+      ...validationOptions,
+    },
+  );
+};
+
+export const IsNotEmptyByField = (
+  validationOptions: ValidationOptions,
+  requiredFields: string[] = [],
+  notRequiredFields: string[] = [],
+) => {
+  return IsFieldJudgment(
+    requiredFields,
+    notRequiredFields,
+    (value) => Boolean(value),
+    {
+      message: '不能为空',
+      ...validationOptions,
+    },
+  );
+};
 
 export class SignDto {
   @IsNumberString({}, { message: '账号需为纯数字' })
@@ -58,9 +135,39 @@ export class LoginDto extends OmitType(SignDto, [
   'name',
   'email',
   'emailCode',
+  'password',
 ]) {
+  @IsStringByField({ message: '邮箱需为字符串' }, [], ['username'])
+  // @TODO 未实现邮箱校验
+  // @IsEmail({}, { message: '邮箱格式不正确' })
+  @IsNotEmptyByField({ message: '请输入邮箱' }, [], ['username'])
+  @ApiProperty({
+    description: '邮箱',
+    type: 'string',
+    example: 'layouwen@gmail.com',
+  })
+  email: string;
+
   @ApiProperty({ description: '验证码', type: 'string', example: '923a' })
-  @IsString({ message: '验证码需为字符串' })
-  @IsNotEmpty({ message: '请输入验证码' })
+  @IsStringByField({ message: '验证码需为字符串' }, ['username'])
+  @IsNotEmptyByField({ message: '验证码错误' }, ['username'])
   captcha: string;
+
+  @IsNotEmptyByField({ message: '请输入验证码' }, ['email'])
+  @IsStringByField({ message: '验证码需为字符串' }, ['email'])
+  @ApiProperty({
+    description: '邮箱验证码',
+    type: 'string',
+    example: '33nd',
+  })
+  emailCode: string;
+
+  @IsNotEmptyByField({ message: '请输入密码' }, ['username'])
+  @IsStringByField({ message: '密码需为字符串' }, ['username'])
+  @ApiProperty({
+    description: '密码',
+    type: 'string',
+    example: 'layouwen',
+  })
+  password: string;
 }
