@@ -22,7 +22,9 @@ export class UserController {
   @ApiOperation({ summary: '获取用户信息' })
   async getUserInfo(@Req() req) {
     // base info
-    const userInfo = await this.usersService.getUserInfo(req.user.id);
+    const userInfo = await this.usersService.getUserInfo(req.user.id, [
+      'email',
+    ]);
 
     // check in info
     const checkIn = !!(await this.checkInService.hasCheckIn(req.user.id));

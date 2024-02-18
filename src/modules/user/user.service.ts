@@ -35,9 +35,9 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
-  getUserInfo(id: number) {
+  getUserInfo(id: number, select = []) {
     return this.usersRepository.findOne(id, {
-      select: ['id', 'username', 'name', 'avatar'],
+      select: ['id', 'username', 'name', 'avatar', ...select],
     });
   }
 
