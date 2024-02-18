@@ -8,6 +8,7 @@ import {
 } from '../../utils';
 import { UserService } from '../user/user.service';
 import { SignDto } from './dto/auth.dto';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class AuthService {
@@ -64,11 +65,17 @@ export class AuthService {
     return null;
   }
 
-  async validateUserByUsernameAndPassword(
+  async validateUserByUsernameEmailAndPassword(
     username: string,
     password: string,
   ): Promise<any> {
-    const user = await this.usersService.findOneByUserName(username);
+    let user = null;
+
+    if (isEmail(username)) {
+      user = await this.usersService.findOneByEmail(username);
+    } else {
+      user = await this.usersService.findOneByUserName(username);
+    }
 
     if (!user || user.password !== password) {
       throwFail('账号或密码错误');

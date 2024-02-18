@@ -25,7 +25,10 @@ export class UserService {
   }
 
   findOneByEmail(email: string) {
-    return this.usersRepository.findOne({ where: { email } });
+    return this.usersRepository.findOne({
+      where: { email },
+      select: ['password', 'id', 'username'],
+    });
   }
 
   create(user: DeepPartial<User>): Promise<User> {

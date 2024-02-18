@@ -9,8 +9,30 @@ import {
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  isEmail,
   registerDecorator,
 } from 'class-validator';
+
+export const IsNumberStringOrEmail = (validationOptions: ValidationOptions) => {
+  return function (object: Record<string, any>, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [],
+      validator: {
+        validate(value: any) {
+          if (!value) return true;
+
+          return (
+            isEmail(value) ||
+            (typeof value === 'string' && !isNaN(Number(value)))
+          );
+        },
+      },
+    });
+  };
+};
 
 @ValidatorConstraint({ async: true })
 export class IsRequiredConstraint implements ValidatorConstraintInterface {
@@ -136,7 +158,17 @@ export class LoginDto extends OmitType(SignDto, [
   'email',
   'emailCode',
   'password',
+  'username',
 ]) {
+  @IsNumberStringOrEmail({ message: '账号需为纯数字' })
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: '账号',
+    type: 'string',
+    example: '794234293 / layouwen@gmail.com',
+  })
+  username?: string;
+
   @IsStringByField({ message: '邮箱需为字符串' }, [], ['username'])
   // @TODO 未实现邮箱校验
   // @IsEmail({}, { message: '邮箱格式不正确' })

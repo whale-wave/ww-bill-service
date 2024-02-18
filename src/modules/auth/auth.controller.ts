@@ -33,7 +33,7 @@ export class AuthController {
     description: '登录账号',
   })
   @ApiBody({ type: LoginDto })
-  async login(@Request() req, @Body() body: LoginDto, @Session() session) {
+  async login(@Body() body: LoginDto, @Session() session) {
     const { username, password, email, emailCode } = body;
     let user = null;
 
@@ -41,7 +41,7 @@ export class AuthController {
       const captcha = body.captcha.toLowerCase();
       if (!captcha || session.captcha !== captcha) return fail('验证码错误');
 
-      user = await this.authService.validateUserByUsernameAndPassword(
+      user = await this.authService.validateUserByUsernameEmailAndPassword(
         username,
         password,
       );
