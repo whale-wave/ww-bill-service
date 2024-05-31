@@ -1,4 +1,4 @@
-import { success } from './../../utils/response/index';
+import { success } from '../../utils';
 import { Injectable } from '@nestjs/common';
 import {
   GetChartDataDto,
