@@ -1,3 +1,5 @@
+import { RESPONSE_STATUS_CODE } from './response';
+
 export const successObject = (message: string = RESPONSE_MESSAGE.SUCCESS) => ({
   statusCode: RESPONSE_STATUS_CODE.SUCCESS,
   message,
@@ -29,9 +31,4 @@ export enum RESPONSE_MESSAGE {
   CREATED = '创建成功',
   UPDATED = '更新成功',
   DELETED = '删除成功',
-}
-
-export enum RESPONSE_STATUS_CODE {
-  SUCCESS = 200,
-  ERROR = 400,
 }
