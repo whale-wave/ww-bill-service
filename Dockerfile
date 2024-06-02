@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:18-alpine
 RUN npm i -g npm@8.6.0 && \
 #    npm config set registry https://registry.npmmirror.com && \
     npm i -g pnpm@6 && \
