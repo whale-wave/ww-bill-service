@@ -203,3 +203,57 @@ export class LoginDto extends OmitType(SignDto, [
   })
   password: string;
 }
+
+export class VerifyEmailCaptchaDto {
+  @ApiProperty({
+    description: '邮箱',
+    example: 'layouwen@gmail.com',
+  })
+  @IsEmail({}, { message: '邮箱格式不正确' })
+  email: string;
+
+  @ApiProperty({
+    description: '邮箱验证码',
+    example: '123456',
+  })
+  @IsString({ message: '验证码格式不正确' })
+  captcha: string;
+}
+
+export class PostResetPasswordByForgetPasswordCaptchaDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: '邮箱',
+    type: 'string',
+    example: 'layouwen@gmail.com',
+  })
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: '验证码',
+    type: 'string',
+    example: '74fgx4',
+  })
+  captcha: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: '新密码',
+    type: 'string',
+    example: '123123123',
+  })
+  password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: '确认密码',
+    type: 'string',
+    example: '123123123',
+  })
+  confirmPassword: string;
+}

@@ -109,4 +109,8 @@ export class AuthService {
   async createDefaultCategory(userId: string) {
     return this.usersService.createDefaultCategory(userId);
   }
+
+  resetPasswordByEmail(email: string, password: string) {
+    return this.usersService.updatePasswordByEmail(email, password);
+  }
 }

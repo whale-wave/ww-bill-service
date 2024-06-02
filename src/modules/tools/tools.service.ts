@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import * as svgCaptcha from 'svg-captcha';
 import * as nodemailer from 'nodemailer';
 import config from '../../config';
+import {ConfigObject} from "svg-captcha";
 
 @Injectable()
 export class ToolsService {
-  svgCaptcha() {
-    return svgCaptcha.create();
+  svgCaptcha(options?: ConfigObject) {
+    return svgCaptcha.create(options);
   }
 
   async emailCaptcha({

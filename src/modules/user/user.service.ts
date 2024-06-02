@@ -64,4 +64,8 @@ export class UserService {
       .values(createDefaultCategory(userId))
       .execute();
   }
+
+  async updatePasswordByEmail(email: string, password: string) {
+    return this.usersRepository.update({ email }, { password });
+  }
 }

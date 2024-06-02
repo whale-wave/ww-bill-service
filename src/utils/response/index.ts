@@ -3,10 +3,10 @@ import {
   createdObject,
   deletedObject,
   failObject,
-  RESPONSE_STATUS_CODE,
   successObject,
   updatedObject,
 } from './baseObject';
+import { RESPONSE_STATUS_CODE } from './response';
 
 export type SuccessResponse = {
   statusCode: RESPONSE_STATUS_CODE;
@@ -44,3 +44,5 @@ export const throwFail = (
 ) => {
   throw new HttpException(failObject(message), httpStatus);
 };
+
+export * from './response';
