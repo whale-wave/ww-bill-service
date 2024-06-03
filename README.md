@@ -5,9 +5,17 @@
 ### Install
 
 ```bash
-yanr
+yarn
 
 yarn start:dev
+```
+
+### Nest Cli
+
+create module
+
+```bash
+nest g res <module_name>
 ```
 
 ### Migration
@@ -32,7 +40,8 @@ pnpm m:revert
 
 ## Recommended version
 
-> NodeJs version 18.14.0
+> NodeJs version 18.19.0  
+> Yarn version 1.19.2
 
 ## Related documents
 
