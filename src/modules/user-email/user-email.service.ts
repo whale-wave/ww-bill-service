@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserEmailDto } from './dto/create-user-email.dto';
-import { UpdateUserEmailDto } from './dto/update-user-email.dto';
+
+export interface ChangeEmailInfoSession {
+  userId: number;
+  email: string;
+  captcha: string;
+  captchaSendTime: number;
+  newEmail?: string;
+  newCaptcha?: string;
+}
+
+const key = 'changeEmail';
 
 @Injectable()
 export class UserEmailService {
-  create(createUserEmailDto: CreateUserEmailDto) {
-    return 'This action adds a new userEmail';
+  setChangeEmailInfoBySession(session: any, data: ChangeEmailInfoSession) {
+    session[key] = data;
   }
 
-  findAll() {
-    return `This action returns all userEmail`;
+  setChangeEmailInfoFieldBySession(session: any, key: keyof ChangeEmailInfoSession, value: ChangeEmailInfoSession) {
+    session[key] = value;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userEmail`;
+  getChangeEmailInfoBySession(
+    session: any,
+  ): ChangeEmailInfoSession | undefined {
+    return session[key];
   }
 
-  update(id: number, updateUserEmailDto: UpdateUserEmailDto) {
-    return `This action updates a #${id} userEmail`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} userEmail`;
+  verifyChangeEmailCaptchaBySendTime(sendTime: number): boolean {
+    return Date.now() - sendTime < 60 * 1000;
   }
 }

@@ -41,6 +41,10 @@ export class UserService {
     });
   }
 
+  getUserInfoFullById(id: number) {
+    return this.usersRepository.findOne(id);
+  }
+
   updateBaseInfo(id: number, updateUserInfoDto: UpdateUserInfoDto) {
     const { name, avatar } = updateUserInfoDto;
     return this.usersRepository.update(id, { name, avatar });
