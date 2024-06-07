@@ -5,29 +5,54 @@ export interface ChangeEmailInfoSession {
   email: string;
   captcha: string;
   captchaSendTime: number;
+  newEmailMatchCaptcha?: string;
   newEmail?: string;
   newCaptcha?: string;
+  newCaptchaSendTime?: number;
 }
 
-const key = 'changeEmail';
+const changeEmailSessionKey = 'changeEmail';
 
 @Injectable()
 export class UserEmailService {
-  setChangeEmailInfoBySession(session: any, data: ChangeEmailInfoSession) {
-    session[key] = data;
+  setChangeEmailInfoBySession(
+    session: any,
+    data: Partial<ChangeEmailInfoSession>,
+    replace = false,
+  ) {
+    if (replace) {
+      session[changeEmailSessionKey] = data;
+    } else {
+      session[changeEmailSessionKey] = {
+        ...session[changeEmailSessionKey],
+        ...data,
+      };
+    }
   }
 
-  setChangeEmailInfoFieldBySession(session: any, key: keyof ChangeEmailInfoSession, value: ChangeEmailInfoSession) {
-    session[key] = value;
+  setChangeEmailInfoFieldBySession(
+    session: any,
+    key: keyof ChangeEmailInfoSession,
+    value: ChangeEmailInfoSession,
+  ) {
+    session[changeEmailSessionKey][key] = value;
   }
 
   getChangeEmailInfoBySession(
     session: any,
   ): ChangeEmailInfoSession | undefined {
-    return session[key];
+    return session[changeEmailSessionKey];
   }
 
   verifyChangeEmailCaptchaBySendTime(sendTime: number): boolean {
-    return Date.now() - sendTime < 60 * 1000;
+    return Date.now() - sendTime < 5 * 60 * 1000;
+  }
+
+  isAllowSendChangeEmailCaptchaBySendTime(sendTime: number): boolean {
+    return Date.now() - sendTime > 60 * 1000;
+  }
+
+  clearChangeEmailInfoBySession(session: any) {
+    delete session[changeEmailSessionKey];
   }
 }

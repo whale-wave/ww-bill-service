@@ -72,4 +72,8 @@ export class UserService {
   async updatePasswordByEmail(email: string, password: string) {
     return this.usersRepository.update({ email }, { password });
   }
+
+  async update(filter: Record<string, any>, data: Partial<User>) {
+    return this.usersRepository.update(filter, data);
+  }
 }
