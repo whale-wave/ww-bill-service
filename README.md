@@ -2,10 +2,32 @@
 
 ## Usage
 
+### Install
+
 ```bash
 yanr
 
 yarn start:dev
+```
+
+### Migration
+
+init migration by postgresql
+
+```bash
+pnpm m:gen -n <migration-name>
+```
+
+create migration
+
+```bash
+pnpm m:create -n <migration-name>
+```
+
+revert migration one step
+
+```bash
+pnpm m:revert
 ```
 
 ## Recommended version
