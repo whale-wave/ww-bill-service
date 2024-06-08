@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -198,7 +199,7 @@ export class UserEmailController {
   async changeEmailByCaptcha(
     @Req() req: any,
     @Session() session: any,
-    @Query()
+    @Body()
     postChangeEmailNewEmailCaptchaDto: PostChangeEmailNewEmailCaptchaDto,
   ) {
     const {
