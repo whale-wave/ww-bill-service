@@ -10,6 +10,11 @@ export enum RESPONSE_STATUS_CODE {
   PASSWORD_EMPTY = 4006,
   PASSWORD_NOT_SAME = 4007,
   PASSWORD_INVALID = 4008,
+  CAPTCHA_SEND_FAIL = 4009,
+  EMAIL_EMPTY = 4010,
+  EMAIL_SAME = 4011,
+  PLEASE_GET_NEW_EMAIL_CAPTCHA = 4012,
+  NEW_CAPTCHA_EXPIRED = 4013,
 }
 
 const responseStatusCodeMessageMap = {
@@ -24,6 +29,11 @@ const responseStatusCodeMessageMap = {
   [RESPONSE_STATUS_CODE.PASSWORD_EMPTY]: '密码不能为空',
   [RESPONSE_STATUS_CODE.PASSWORD_NOT_SAME]: '两次密码不一致',
   [RESPONSE_STATUS_CODE.PASSWORD_INVALID]: '密码不符合规范',
+  [RESPONSE_STATUS_CODE.CAPTCHA_SEND_FAIL]: '验证码发送失败',
+  [RESPONSE_STATUS_CODE.EMAIL_EMPTY]: '邮箱不能为空',
+  [RESPONSE_STATUS_CODE.EMAIL_SAME]: '新邮箱不能与原邮箱相同',
+  [RESPONSE_STATUS_CODE.PLEASE_GET_NEW_EMAIL_CAPTCHA]: '请先获取新邮箱验证码',
+  [RESPONSE_STATUS_CODE.NEW_CAPTCHA_EXPIRED]: '新验证码过期',
 } as const;
 
 export function getResponseStatusCodeMessage(statusCode: RESPONSE_STATUS_CODE) {
@@ -35,36 +45,41 @@ type ApiResponseOptionsMessage =
   | string
   | typeof responseStatusCodeMessageMap[RESPONSE_STATUS_CODE];
 
-interface ApiResponseOptions {
+interface ApiResponseOptions<T> {
   status: ApiResponseOptionsStatus;
   statusCode: RESPONSE_STATUS_CODE;
   message: ApiResponseOptionsMessage;
+  data?: T;
 }
 
-export class ApiResponse {
+export class ApiResponse<T> {
   status: ApiResponseOptionsStatus;
   statusCode: RESPONSE_STATUS_CODE;
   message: ApiResponseOptionsMessage;
+  data?: T;
 
-  constructor({ statusCode, message, status }: ApiResponseOptions) {
+  constructor({ statusCode, message, status, data }: ApiResponseOptions<T>) {
     this.status = status;
     this.statusCode = statusCode;
     this.message = message;
+    this.data = data;
   }
 }
 
-export function sendSuccess({
+export function sendSuccess<T>({
   status = 'success',
   statusCode = RESPONSE_STATUS_CODE.SUCCESS,
   message = getResponseStatusCodeMessage(statusCode),
-}: Partial<ApiResponseOptions> = {}) {
-  return new ApiResponse({ status, statusCode, message });
+  data,
+}: Partial<ApiResponseOptions<T>> = {}) {
+  return new ApiResponse<T>({ status, statusCode, message, data });
 }
 
-export function sendError({
+export function sendError<T>({
   status = 'error',
   statusCode = RESPONSE_STATUS_CODE.ERROR,
   message = getResponseStatusCodeMessage(statusCode),
-}: Partial<ApiResponseOptions> = {}) {
-  return new ApiResponse({ status, statusCode, message });
+  data,
+}: Partial<ApiResponseOptions<T>> = {}) {
+  return new ApiResponse<T>({ status, statusCode, message, data });
 }

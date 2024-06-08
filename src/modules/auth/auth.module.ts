@@ -14,7 +14,7 @@ import { ToolsModule } from '../tools/tools.module';
   imports: [
     JwtModule.register({
       secret: config.secret,
-      signOptions: { expiresIn: '12h' },
+      signOptions: { expiresIn: config.token.expiresIn },
     }),
     PassportModule,
     UserModule,
