@@ -38,6 +38,10 @@ revert migration one step
 pnpm m:revert
 ```
 
+### Swagger
+
+[json同步地址](http://localhost:3001/doc-json)
+
 ## Recommended version
 
 > NodeJs version 18.19.0  
