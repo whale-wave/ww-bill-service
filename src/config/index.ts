@@ -5,6 +5,7 @@ dotenv.config();
 const {
   SECRET,
   EMAIL_PASSWORD,
+  TOKEN_EXPIRES_IN,
   // OSS
   // qi niu
   OSS_QI_NIU_BUCKET,
@@ -21,6 +22,9 @@ const {
 export default {
   secret: SECRET || '',
   emailPassword: EMAIL_PASSWORD || '',
+  token: {
+    expiresIn: TOKEN_EXPIRES_IN || '7d',
+  },
   oss: {
     qiniu: {
       bucket: OSS_QI_NIU_BUCKET || '',
