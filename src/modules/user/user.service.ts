@@ -41,6 +41,10 @@ export class UserService {
     });
   }
 
+  getUserInfoFullById(id: number) {
+    return this.usersRepository.findOne(id);
+  }
+
   updateBaseInfo(id: number, updateUserInfoDto: UpdateUserInfoDto) {
     const { name, avatar } = updateUserInfoDto;
     return this.usersRepository.update(id, { name, avatar });
@@ -67,5 +71,9 @@ export class UserService {
 
   async updatePasswordByEmail(email: string, password: string) {
     return this.usersRepository.update({ email }, { password });
+  }
+
+  async update(filter: Record<string, any>, data: Partial<User>) {
+    return this.usersRepository.update(filter, data);
   }
 }

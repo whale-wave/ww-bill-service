@@ -5,9 +5,17 @@
 ### Install
 
 ```bash
-yanr
+yarn
 
 yarn start:dev
+```
+
+### Nest Cli
+
+create module
+
+```bash
+nest g res <module_name>
 ```
 
 ### Migration
@@ -30,9 +38,14 @@ revert migration one step
 pnpm m:revert
 ```
 
+### Swagger
+
+[json同步地址](http://localhost:3001/doc-json)
+
 ## Recommended version
 
-> NodeJs version 18.14.0
+> NodeJs version 18.19.0  
+> Yarn version 1.19.2
 
 ## Related documents
 
