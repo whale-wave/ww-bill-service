@@ -43,12 +43,23 @@ export class AuthController {
   })
   @ApiBody({ type: LoginDto })
   async login(@Body() body: LoginDto, @Session() session) {
-    const { username, password, email, emailCode } = body;
+    const {
+      username: _username,
+      password: _password,
+      email: _email,
+      emailCode: _emailCode,
+    } = body;
+    const password = _password?.trim();
+    const email = _email?.trim();
+    const emailCode = _emailCode?.trim();
+    const username = _username?.trim();
+
     let user = null;
 
     if (username) {
-      const captcha = body.captcha.toLowerCase();
-      if (!captcha || session.captcha !== captcha) return fail('验证码错误');
+      const captcha = body.captcha?.toLowerCase();
+      if (!captcha || session.captcha !== captcha)
+        return sendError({ message: '验证码错误' });
 
       user = await this.authService.validateUserByUsernameEmailAndPassword(
         username,
@@ -61,7 +72,7 @@ export class AuthController {
         session.loginEmailCode,
       );
     } else {
-      return fail('参数错误');
+      return sendError({ message: '参数错误' });
     }
 
     const userInfo = await this.authService.login(user.id);
@@ -70,16 +81,16 @@ export class AuthController {
     delete session.loginEmailCode;
     delete session.loginEmail;
 
-    return success(
-      {
+    return sendSuccess({
+      message: '登录成功',
+      data: {
         userInfo,
         token: this.jwtService.sign({
           id: user.id,
           username: user.username,
         }),
       },
-      '登录成功',
-    );
+    });
   }
 
   @Post('sign')
