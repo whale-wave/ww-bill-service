@@ -15,6 +15,7 @@ export enum RESPONSE_STATUS_CODE {
   EMAIL_SAME = 4011,
   PLEASE_GET_NEW_EMAIL_CAPTCHA = 4012,
   NEW_CAPTCHA_EXPIRED = 4013,
+  NO_VALID_PARAMETER = 4014,
 }
 
 const responseStatusCodeMessageMap = {
@@ -34,6 +35,7 @@ const responseStatusCodeMessageMap = {
   [RESPONSE_STATUS_CODE.EMAIL_SAME]: '新邮箱不能与原邮箱相同',
   [RESPONSE_STATUS_CODE.PLEASE_GET_NEW_EMAIL_CAPTCHA]: '请先获取新邮箱验证码',
   [RESPONSE_STATUS_CODE.NEW_CAPTCHA_EXPIRED]: '新验证码过期',
+  [RESPONSE_STATUS_CODE.NO_VALID_PARAMETER]: '无效参数',
 } as const;
 
 export function getResponseStatusCodeMessage(statusCode: RESPONSE_STATUS_CODE) {

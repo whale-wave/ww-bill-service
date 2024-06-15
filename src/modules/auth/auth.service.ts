@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { isEmail } from 'class-validator';
 import {
   generateNumber,
   throwFail,
@@ -7,14 +8,15 @@ import {
   validatePassword,
 } from '../../utils';
 import { UserService } from '../user/user.service';
+import { UserAppConfigService } from '../user-app-config/user-app-config.service';
 import { SignDto } from './dto/auth.dto';
-import { isEmail } from 'class-validator';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
+    private userAppConfigService: UserAppConfigService,
   ) {}
 
   login(id: number) {
@@ -26,11 +28,14 @@ export class AuthService {
     let { username } = signDto;
 
     if (username) {
-      if (!validateNumber(username)) throwFail('账号必须为数字');
+      if (!validateNumber(username))
+        throwFail('账号必须为数字');
 
       const userEntry = await this.usersService.findOneByUserName(username);
-      if (userEntry) throwFail('账号已经注册');
-    } else {
+      if (userEntry)
+        throwFail('账号已经注册');
+    }
+    else {
       const genNum = generateNumber(10);
       username = genNum.toString();
       while (await this.usersService.findOneByUserName(username)) {
@@ -38,16 +43,21 @@ export class AuthService {
       }
     }
 
-    if (password && !validatePassword(password)) throwFail('密码必须为8-20位');
+    if (password && !validatePassword(password))
+      throwFail('密码必须为8-20位');
 
     const emailEntry = await this.usersService.findOneByEmail(email);
-    if (emailEntry) throwFail('邮箱已经注册');
+    if (emailEntry)
+      throwFail('邮箱已经注册');
 
-    const { id } = await this.usersService.create({
+    const user = await this.usersService.create({
       email,
       username,
       password,
     });
+    const { id } = user;
+
+    await this.userAppConfigService.create({ user });
 
     return { token: this.jwtService.sign({ username, id }), id };
   }
@@ -58,7 +68,6 @@ export class AuthService {
   ): Promise<any> {
     const user = await this.usersService.findOneByUserName(username);
     if (user && user.password === password) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
     }
@@ -73,7 +82,8 @@ export class AuthService {
 
     if (isEmail(username)) {
       user = await this.usersService.findOneByEmail(username);
-    } else {
+    }
+    else {
       user = await this.usersService.findOneByUserName(username);
     }
 
