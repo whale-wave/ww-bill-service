@@ -1,6 +1,8 @@
+import * as path from 'node:path';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConnectionOptions } from 'typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserInitMiddleware } from './middleware/UserInitMiddleware';
@@ -13,11 +15,10 @@ import { ToolsModule } from './modules/tools/tools.module';
 import { TopicModule } from './modules/topic/topic.module';
 import { UserModule } from './modules/user/user.module';
 import { RecordModule } from './modules/record/record.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { CheckInModule } from './modules/check-in/check-in.module';
-import * as path from 'path';
 import { ChartModule } from './modules/chart/chart.module';
 import { UserEmailModule } from './modules/user-email/user-email.module';
+import { UserAppConfigModule } from './modules/user-app-config/user-app-config.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { UserEmailModule } from './modules/user-email/user-email.module';
     CompatibleModule,
     ChartModule,
     UserEmailModule,
+    UserAppConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

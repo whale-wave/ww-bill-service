@@ -21,9 +21,11 @@
     "m:create": "typeorm migration:create",
     "m:run": "typeorm migration:run",
     "m:revert": "typeorm migration:revert",
+    "n:g:res": "nest g res",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "migration": "ts-node migrations/index.ts"
   },
   "dependencies": {
     "@nestjs/common": "8.0.0",

@@ -13,16 +13,12 @@ module.exports = [
   {
     type: ORM_TYPE,
     host: ORM_HOST,
-    port: isNaN(Number(ORM_PORT)) ? '5432' : Number(ORM_PORT),
+    port: Number.isNaN(Number(ORM_PORT)) ? '5432' : Number(ORM_PORT),
     username: ORM_USERNAME,
     password: ORM_PASSWORD,
     database: ORM_DATABASE,
     synchronize: ORM_SYNCHRONIZE === 'true',
     timezone: ORM_TIMEZONE,
     entities: ['dist/**/*.entity{.ts,.js}'],
-    migrations: ['dist/migrations/*{.ts,.js}'],
-    cli: {
-      migrationsDir: './src/migrations',
-    },
   },
 ];
