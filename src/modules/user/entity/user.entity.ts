@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -13,6 +14,7 @@ import { Record } from '../../record/entity/record.entity';
 import { SystemNotify } from '../../system-notify/entity/system-notify.entity';
 import { Comment } from '../../topic/entty/comment.entity';
 import { Topic, TopicLike } from '../../topic/entty/topic.entity';
+import { UserAppConfig } from '../../../entity/UserAppConfig.entity';
 
 @Entity()
 export class User {
@@ -69,4 +71,7 @@ export class User {
 
   @OneToMany('SystemNotify', 'user')
   systemNotifies?: SystemNotify[];
+
+  @OneToOne('UserAppConfig', 'user')
+  userAppConfig: UserAppConfig;
 }

@@ -60,7 +60,8 @@ export class UserService {
 
   async createDefaultCategory(userId: string) {
     const user = await this.usersRepository.findOne(userId);
-    if (!user) throwFail('用户不存在');
+    if (!user)
+      throwFail('用户不存在');
     return this.usersRepository
       .createQueryBuilder()
       .insert()
