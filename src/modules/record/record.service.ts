@@ -1,3 +1,4 @@
+import * as buffer from 'node:buffer';
 import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,8 +12,9 @@ import {
   GetRecordListDto,
   UpdateRecordDto,
 } from './dto/record.dto';
-import { Record } from './entity/record.entity';
-import { calcEachMonthAmount } from './utils';
+import { BillItem, calcEachMonthAmount, calcRecordListAmount } from './utils';
+import { GetRecordBillDtoType } from './dto/GetRecordBillDto';
+import { Record as RecordEntity } from './entity/record.entity';
 
 const typeMap = {
   支出: 'sub',
@@ -27,8 +29,8 @@ enum MoneyType {
 @Injectable()
 export class RecordService {
   constructor(
-    @InjectRepository(Record)
-    private recordRepository: Repository<Record>,
+    @InjectRepository(RecordEntity)
+    private recordRepository: Repository<RecordEntity>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @InjectRepository(Category)
@@ -39,7 +41,7 @@ export class RecordService {
     const { time, remark, type, amount, categoryId } = createRecordDto;
     const user = await this.userRepository.findOne(userId);
     const category = await this.categoryRepository.findOne(categoryId);
-    const record = new Record();
+    const record = new RecordEntity();
     record.user = user;
     record.time = dayjs(time).format();
     record.remark = remark;
@@ -56,9 +58,11 @@ export class RecordService {
   async update(id: number, updateRecordDto: UpdateRecordDto) {
     const { categoryId, ...params } = updateRecordDto;
     const record = await this.findOne(id);
-    if (!record) throwFail('记录不存在');
+    if (!record)
+      throwFail('记录不存在');
     const category = await this.categoryRepository.findOne(categoryId);
-    if (!category) throwFail('分类不存在');
+    if (!category)
+      throwFail('分类不存在');
     return this.recordRepository.save({ ...record, ...params, category });
   }
 
@@ -82,7 +86,8 @@ export class RecordService {
           dayjs(startDate).startOf('day').toDate(),
           dayjs(endDate).endOf('day').toDate(),
         );
-      } else if (startDate) {
+      }
+      else if (startDate) {
         options.where.time = Between(
           dayjs(startDate).startOf('month').toDate(),
           dayjs(startDate).endOf('month').toDate(),
@@ -96,16 +101,16 @@ export class RecordService {
     return { data, total: recordData[1], income, expend };
   }
 
-  getIncome(data: Record[]) {
+  getIncome(data: RecordEntity[]) {
     return data
-      .filter((i) => i.type === MoneyType.INCOME)
-      .reduce((a, b) => math.add(a, parseFloat(b.amount)).toNumber(), 0);
+      .filter(i => i.type === MoneyType.INCOME)
+      .reduce((a, b) => math.add(a, Number.parseFloat(b.amount)).toNumber(), 0);
   }
 
-  getExpend(data: Record[]) {
+  getExpend(data: RecordEntity[]) {
     return data
-      .filter((i) => i.type === MoneyType.EXPEND)
-      .reduce((a, b) => math.add(a, parseFloat(b.amount)).toNumber(), 0);
+      .filter(i => i.type === MoneyType.EXPEND)
+      .reduce((a, b) => math.add(a, Number.parseFloat(b.amount)).toNumber(), 0);
   }
 
   async getBillRecord(id: number) {
@@ -123,7 +128,7 @@ export class RecordService {
     };
   }
 
-  async importData(buffer: Buffer, id: number) {
+  async importData(buffer: buffer.Buffer, id: number) {
     const form = xlsl.parse(buffer);
     const arr = form[0].data.slice(1) as RecordExcelData[];
     const categoryMap = await this.getUserAllCategory(id);
@@ -137,17 +142,18 @@ export class RecordService {
         try {
           await this.create(id, {
             time: date.toISOString(),
-            categoryId: categoryId + '',
+            categoryId: `${categoryId}`,
             remark,
             type,
-            amount: amount + '',
+            amount: `${amount}`,
           });
           count++;
-        } catch (e) {
-          console.log('--------------------------');
-          console.log('import data error: ' + e);
-          console.log(arr[i]);
-          console.log('--------------------------');
+        }
+        catch (e) {
+          console.error('--------------------------');
+          console.error(`import data error: ${e}`);
+          console.error(arr[i]);
+          console.error('--------------------------');
         }
       }
     }
@@ -165,33 +171,84 @@ export class RecordService {
     }, {} as { [key: string]: number });
   }
 
-  async getBill(userId: number, year: string) {
-    const res = await this.recordRepository.find({
-      where: {
-        user: userId,
-        time: Between(
-          dayjs(year).startOf('year').toDate(),
-          dayjs(year).endOf('year').toDate(),
-        ),
-      },
+  async getBill(userId: number, type: GetRecordBillDtoType, year?: string): Promise<{ list: Record<string, BillItem>; all: BillItem;
+    // TODO: 后续不兼容
+    month?: Record<string, BillItem>; }> {
+    switch (type) {
+      case GetRecordBillDtoType.All: {
+        return this.getBillByYearGroup(userId);
+      }
+      case GetRecordBillDtoType.Year: {
+        if (!year)
+          throwFail('参数错误');
+        const res = await this.recordRepository.find({
+          where: {
+            user: userId,
+            time: Between(
+              dayjs(year).startOf('year').toDate(),
+              dayjs(year).endOf('year').toDate(),
+            ),
+          },
+        });
+        return calcEachMonthAmount(res);
+      }
+      default:
+        throwFail('参数错误');
+    }
+  }
+
+  async getBillByYearGroup(userId: number) {
+    const records = await this.recordRepository.find({
+      where: { user: userId },
+      order: { time: 'DESC' },
     });
-    return calcEachMonthAmount(res);
+
+    const yearGroup = records.reduce((pre, cur) => {
+      const year = dayjs(cur.time).year();
+
+      if (!pre[year]) {
+        pre[year] = [];
+      }
+
+      pre[year].push(cur);
+
+      return pre;
+    }, {} as { [year: string]: RecordEntity[] });
+
+    const list = Object.keys(yearGroup).reduce((pre, cur) => {
+      const data = yearGroup[cur];
+      pre[cur] = calcRecordListAmount(data);
+      return pre;
+    }, {} as { [year: string]: BillItem });
+
+    const all = Object.keys(list).reduce((pre, cur) => {
+      pre.income = math.add(list[cur].income, pre.income).toNumber();
+      pre.expand = math.add(list[cur].expand, pre.expand).toNumber();
+      pre.balance = math.add(list[cur].balance, pre.balance).toNumber();
+      return pre;
+    }, { income: 0, expand: 0, balance: 0 } as BillItem);
+
+    return {
+      list,
+      month: list,
+      all,
+    };
   }
 }
 
-const getNowTime = () => {
+function getNowTime() {
   const now = new Date();
   const month = now.getMonth() + 1;
   return {
     month,
   };
-};
+}
 
-const getTimestamp = () => {
+function getTimestamp() {
   return {
     monthStart: dayjs(new Date()).startOf('month').format(),
   };
-};
+}
 
 type RecordExcelData = [
   CategoryString,
