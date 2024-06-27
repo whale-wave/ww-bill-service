@@ -65,7 +65,6 @@ export function calcEachMonthAmount(data: any) {
   }, {} as { [month: string]: BillItem });
 
   return {
-    month: eachMonthAmount,
     list: eachMonthAmount,
     all: totalYearAmount,
   };

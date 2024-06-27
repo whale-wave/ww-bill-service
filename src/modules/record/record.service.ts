@@ -171,9 +171,7 @@ export class RecordService {
     }, {} as { [key: string]: number });
   }
 
-  async getBill(userId: number, type: GetRecordBillDtoType, year?: string): Promise<{ list: Record<string, BillItem>; all: BillItem;
-    // TODO: 后续不兼容
-    month?: Record<string, BillItem>; }> {
+  async getBill(userId: number, type: GetRecordBillDtoType, year?: string): Promise<{ list: Record<string, BillItem>; all: BillItem }> {
     switch (type) {
       case GetRecordBillDtoType.All: {
         return this.getBillByYearGroup(userId);
@@ -230,7 +228,6 @@ export class RecordService {
 
     return {
       list,
-      month: list,
       all,
     };
   }
