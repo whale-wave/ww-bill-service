@@ -1,21 +1,21 @@
 import {
-  Controller,
-  Get,
-  UseGuards,
-  Request,
-  Post,
   Body,
-  Query,
-  Put,
-  Param,
+  Controller,
   Delete,
-  UploadedFile,
-  UseInterceptors,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
   Req,
+  Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { created, deleted, success, updated, fail } from '../../utils';
+import { created, deleted, fail, success, updated } from '../../utils';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   CreateRecordDto,
@@ -23,6 +23,7 @@ import {
   UpdateRecordDto,
 } from './dto/record.dto';
 import { RecordService } from './record.service';
+import { GetRecordBillDto } from './dto/GetRecordBillDto';
 
 @ApiTags('record')
 @UseGuards(JwtAuthGuard)
@@ -66,8 +67,9 @@ export class RecordController {
   @ApiOperation({ summary: '导入数据' })
   @UseInterceptors(FileInterceptor('file'))
   async importData(@UploadedFile() file: Express.Multer.File, @Req() req) {
-    if (!file) return fail('请上传 excel 文件，用于导入数据');
-    if (file.mimetype.indexOf('sheet') === -1)
+    if (!file)
+      return fail('请上传 excel 文件，用于导入数据');
+    if (!file.mimetype.includes('sheet'))
       return fail('只支持 xlsx 格式文件');
     const res = await this.recordService.importData(file.buffer, req.user.id);
     return success(res, '导入成功');
@@ -75,8 +77,9 @@ export class RecordController {
 
   @Get('bill')
   @ApiOperation({ summary: '获取账单数据' })
-  async getBill(@Req() req, @Query('year') year: string) {
-    const res = await this.recordService.getBill(req.user.id, year);
+  async getBill(@Req() req, @Query() query: GetRecordBillDto) {
+    const { type, year } = query;
+    const res = await this.recordService.getBill(req.user.id, type, year);
     return success(res, '获取成功');
   }
 }

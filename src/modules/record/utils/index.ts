@@ -1,12 +1,34 @@
 import * as dayjs from 'dayjs';
 import { math } from '../../../utils';
 import { RecordType } from '../../../types';
+import { Record } from '../entity/record.entity';
 
-export function calcEachMonthAmount(data) {
+export function calcRecordListAmount(recordList: Record[]) {
+  const { income, expand } = recordList.reduce(
+    (res, i) => {
+      if (i.type === RecordType.EXPEND) {
+        res.expand = math.add(res.expand, i.amount).toNumber();
+      }
+      else if (i.type === RecordType.INCOME) {
+        res.income = math.add(res.income, i.amount).toNumber();
+      }
+      return res;
+    },
+    { income: 0, expand: 0 },
+  );
+  return {
+    income,
+    expand,
+    balance: math.subtract(income, expand).toNumber(),
+  };
+}
+
+export function calcEachMonthAmount(data: any) {
   const monthList = {};
-  data.forEach((i) => {
+  data.forEach((i: any) => {
     const month = dayjs(i.time).month() + 1;
-    if (!(month in monthList)) monthList[month] = [];
+    if (!(month in monthList))
+      monthList[month] = [];
     monthList[month].push([i.type, i.amount]);
   });
 
@@ -17,7 +39,8 @@ export function calcEachMonthAmount(data) {
       (res, [type, amount]) => {
         if (type === RecordType.EXPEND) {
           res.expand = math.add(res.expand, amount).toNumber();
-        } else if (type === RecordType.INCOME) {
+        }
+        else if (type === RecordType.INCOME) {
           res.income = math.add(res.income, amount).toNumber();
         }
         return res;
@@ -42,13 +65,13 @@ export function calcEachMonthAmount(data) {
   }, {} as { [month: string]: BillItem });
 
   return {
-    month: eachMonthAmount,
+    list: eachMonthAmount,
     all: totalYearAmount,
   };
 }
 
-type BillItem = {
+export interface BillItem {
   income: number;
   expand: number;
   balance: number;
-};
+}
