@@ -19,6 +19,7 @@ import { CheckInModule } from './modules/check-in/check-in.module';
 import { ChartModule } from './modules/chart/chart.module';
 import { UserEmailModule } from './modules/user-email/user-email.module';
 import { UserAppConfigModule } from './modules/user-app-config/user-app-config.module';
+import { InvoiceModule } from './modules/invoice/invoice.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UserAppConfigModule } from './modules/user-app-config/user-app-config.m
     ChartModule,
     UserEmailModule,
     UserAppConfigModule,
+    InvoiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

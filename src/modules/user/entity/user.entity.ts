@@ -15,6 +15,7 @@ import { SystemNotify } from '../../system-notify/entity/system-notify.entity';
 import { Comment } from '../../topic/entty/comment.entity';
 import { Topic, TopicLike } from '../../topic/entty/topic.entity';
 import { UserAppConfig } from '../../../entity/UserAppConfig.entity';
+import { Invoice } from '../../../entity/Invoice.entity';
 
 @Entity()
 export class User {
@@ -74,4 +75,7 @@ export class User {
 
   @OneToOne('UserAppConfig', 'user')
   userAppConfig: UserAppConfig;
+
+  @OneToMany('Invoice', 'user')
+  invoice: Invoice[];
 }
