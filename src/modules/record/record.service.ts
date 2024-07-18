@@ -3,7 +3,7 @@ import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import xlsl from 'node-xlsx';
-import { Between, ObjectLiteral, Repository } from 'typeorm';
+import { Between, Like, ObjectLiteral, Repository } from 'typeorm';
 import { math, throwFail } from '../../utils';
 import { Category } from '../category/entity/category.entity';
 import { User } from '../user/entity/user.entity';
@@ -72,7 +72,7 @@ export class RecordService {
 
   async findAll(userId: number, params?: GetRecordListDto) {
     const options = {
-      where: { user: userId },
+      where: [{ user: userId }],
       order: { time: 'DESC', createdAt: 'DESC' },
       relations: ['category'],
     } as ObjectLiteral;
@@ -80,18 +80,32 @@ export class RecordService {
     const recordData = await this.recordRepository.findAndCount(options);
 
     if (params) {
-      const { startDate, endDate } = params;
+      const { startDate, endDate, keyword } = params;
+
+      if (keyword) {
+        options.where = [
+          { user: userId, remark: Like(`%${keyword}%`) },
+          { user: userId, category: { name: Like(`%${keyword}%`) } },
+        ];
+      }
+
       if (startDate && endDate) {
-        options.where.time = Between(
-          dayjs(startDate).startOf('day').toDate(),
-          dayjs(endDate).endOf('day').toDate(),
-        );
+        options.where.map((where: Record<string, any>) => {
+          where.time = Between(
+            dayjs(startDate).startOf('day').toDate(),
+            dayjs(endDate).endOf('day').toDate(),
+          );
+          return where;
+        });
       }
       else if (startDate) {
-        options.where.time = Between(
-          dayjs(startDate).startOf('month').toDate(),
-          dayjs(startDate).endOf('month').toDate(),
-        );
+        options.where.map((where: Record<string, any>) => {
+          where.time = Between(
+            dayjs(startDate).startOf('month').toDate(),
+            dayjs(startDate).endOf('month').toDate(),
+          );
+          return where;
+        });
       }
     }
 
