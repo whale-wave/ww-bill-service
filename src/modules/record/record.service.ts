@@ -3,7 +3,7 @@ import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import xlsl from 'node-xlsx';
-import { Between, Like, ObjectLiteral, Repository } from 'typeorm';
+import { Between, FindOneOptions, Like, ObjectLiteral, Repository } from 'typeorm';
 import { math, throwFail } from '../../utils';
 import { Category } from '../category/entity/category.entity';
 import { User } from '../user/entity/user.entity';
@@ -57,7 +57,7 @@ export class RecordService {
 
   async update(id: number, updateRecordDto: UpdateRecordDto) {
     const { categoryId, ...params } = updateRecordDto;
-    const record = await this.findOne(id);
+    const record = await this.findOne({ where: { id } });
     if (!record)
       throwFail('记录不存在');
     const category = await this.categoryRepository.findOne(categoryId);
@@ -66,8 +66,8 @@ export class RecordService {
     return this.recordRepository.save({ ...record, ...params, category });
   }
 
-  findOne(id: number) {
-    return this.recordRepository.findOne(id);
+  findOne(options: FindOneOptions<RecordEntity>) {
+    return this.recordRepository.findOne(options);
   }
 
   async findAll(userId: number, params?: GetRecordListDto) {
