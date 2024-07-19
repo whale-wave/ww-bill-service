@@ -58,4 +58,9 @@ export class GetRecordListDto {
   @IsOptional()
   @ApiPropertyOptional({ example: '2022-4-3', description: '结束时间' })
   endDate?: string;
+
+  @IsString({ message: '关键字必须为字符串' })
+  @IsOptional()
+  @ApiPropertyOptional({ example: '吃饭', description: '关键字查询' })
+  keyword?: string;
 }
