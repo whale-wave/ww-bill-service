@@ -48,25 +48,6 @@ export class RecordController {
     return success(data);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: '记录详情' })
-  async findOne(
-    @Req() req: any,
-    @Param() findOneParamDto: FindOneParamDto,
-  ) {
-    const data = await this.recordService.findOne({
-      where: {
-        user: req.user.id,
-        id: findOneParamDto.id,
-      },
-      relations: ['category'],
-    });
-    if (!data) {
-      return sendError({ statusCode: RESPONSE_STATUS_CODE.NO_FOUND_DATA });
-    }
-    return sendSuccess({ data });
-  }
-
   @Post()
   @ApiOperation({ summary: '添加记录' })
   async create(@Req() req: any, @Body() body: CreateRecordDto) {
@@ -109,5 +90,24 @@ export class RecordController {
     const { type, year } = query;
     const res = await this.recordService.getBill(req.user.id, type, year);
     return success(res, '获取成功');
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: '记录详情' })
+  async findOne(
+    @Req() req: any,
+    @Param() findOneParamDto: FindOneParamDto,
+  ) {
+    const data = await this.recordService.findOne({
+      where: {
+        user: req.user.id,
+        id: findOneParamDto.id,
+      },
+      relations: ['category'],
+    });
+    if (!data) {
+      return sendError({ statusCode: RESPONSE_STATUS_CODE.NO_FOUND_DATA });
+    }
+    return sendSuccess({ data });
   }
 }
