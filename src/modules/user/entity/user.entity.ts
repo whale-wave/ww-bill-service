@@ -16,6 +16,7 @@ import { Comment } from '../../topic/entty/comment.entity';
 import { Topic, TopicLike } from '../../topic/entty/topic.entity';
 import { UserAppConfig } from '../../../entity/UserAppConfig.entity';
 import { Invoice } from '../../../entity/Invoice.entity';
+import { BudgetEntity } from '../../../entity/budget.entity';
 
 @Entity()
 export class User {
@@ -78,4 +79,7 @@ export class User {
 
   @OneToMany('Invoice', 'user')
   invoice: Invoice[];
+
+  @OneToMany('budget', 'user')
+  budget: BudgetEntity[];
 }

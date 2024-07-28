@@ -44,7 +44,7 @@ export class RecordController {
   @Get()
   @ApiOperation({ summary: '明细页数据' })
   async findAll(@Req() req: any, @Query() query: GetRecordListDto) {
-    const data = await this.recordService.findAll(+req.user.id, query);
+    const data = await this.recordService.findAllByUserIdAndParams(+req.user.id, query);
     return success(data);
   }
 

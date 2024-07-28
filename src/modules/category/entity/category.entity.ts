@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Record } from '../../record/entity/record.entity';
 import { User } from '../../user/entity/user.entity';
+import { BudgetEntity } from '../../../entity/budget.entity';
 
 @Entity()
 export class Category {
@@ -35,4 +36,7 @@ export class Category {
 
   @OneToMany('Record', 'category')
   records: Record[];
+
+  @OneToMany('budget', 'category')
+  budget: BudgetEntity[];
 }

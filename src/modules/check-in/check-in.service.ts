@@ -59,7 +59,7 @@ export class CheckInService {
       where: { user: userId },
       order: { checkInTime: 'DESC' },
     });
-    const { total } = await this.recordService.findAll(userId);
+    const { total } = await this.recordService.findAllByUserIdAndParams(userId);
     return {
       checkInKeep: getContinueDay(list),
       checkInAll,
@@ -68,9 +68,10 @@ export class CheckInService {
   }
 }
 
-const getContinueDay = (list: { checkInTime: string }[]) => {
+function getContinueDay(list: { checkInTime: string }[]) {
   let day = 0;
-  if (!list.length) return day;
+  if (!list.length)
+    return day;
   let nowStartDay = dayjs().startOf('day');
   const left = dayjs().subtract(1, 'day').startOf('day');
   const right = dayjs().endOf('day');
@@ -81,10 +82,11 @@ const getContinueDay = (list: { checkInTime: string }[]) => {
     for (const i of list) {
       const dayStart = dayjs(nowStartDay).startOf('day');
       const dayEnd = dayjs(nowStartDay).endOf('day');
-      if (!dayjs(i.checkInTime).isBetween(dayStart, dayEnd, 'day', '[]')) break;
+      if (!dayjs(i.checkInTime).isBetween(dayStart, dayEnd, 'day', '[]'))
+        break;
       day++;
       nowStartDay = nowStartDay.subtract(1, 'day');
     }
   }
   return day;
-};
+}

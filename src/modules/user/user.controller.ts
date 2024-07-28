@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { success, updated, fail } from '../../utils';
+import { fail, success, updated } from '../../utils';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CheckInService } from '../check-in/check-in.service';
 import { RecordService } from '../record/record.service';
@@ -30,11 +30,11 @@ export class UserController {
     const checkIn = !!(await this.checkInService.hasCheckIn(req.user.id));
 
     // check day count
-    const { checkInAll, checkInKeep } =
-      await this.checkInService.getCheckInInfo(req.user.id);
+    const { checkInAll, checkInKeep }
+      = await this.checkInService.getCheckInInfo(req.user.id);
 
     // record quantity
-    const { total } = await this.recordService.findAll(req.user.id);
+    const { total } = await this.recordService.findAllByUserIdAndParams(req.user.id);
 
     // bill record
     const billRecord = await this.recordService.getBillRecord(req.user.id);
@@ -68,7 +68,8 @@ export class UserController {
       req.user.id,
       updatePasswordDto,
     );
-    if (affected) return updated();
+    if (affected)
+      return updated();
     return fail('旧密码错误');
   }
 }

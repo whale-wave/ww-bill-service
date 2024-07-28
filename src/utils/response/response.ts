@@ -21,6 +21,7 @@ export enum RESPONSE_STATUS_CODE {
   NO_VALID_PARAMETER = 4014,
   NO_FOUND_DATA = 4015,
   BODY_EMPTY = 4016,
+  RECALCULATE_BUDGET_SUCCESS = 4017,
 }
 
 const responseStatusCodeMessageMap = {
@@ -46,6 +47,7 @@ const responseStatusCodeMessageMap = {
   [RESPONSE_STATUS_CODE.UPDATE_SUCCESS]: '更新成功',
   [RESPONSE_STATUS_CODE.NO_FOUND_DATA]: '未找到数据',
   [RESPONSE_STATUS_CODE.BODY_EMPTY]: '请求体不能为空',
+  [RESPONSE_STATUS_CODE.RECALCULATE_BUDGET_SUCCESS]: '重算预算成功',
 } as const;
 
 export function getResponseStatusCodeMessage(statusCode: RESPONSE_STATUS_CODE) {
