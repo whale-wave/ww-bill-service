@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumberString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
+import { BudgetEntityType } from '../../../entity/budget.entity';
 
 export class PatchBudgetAmountDto {
   @ApiProperty({
@@ -10,4 +11,13 @@ export class PatchBudgetAmountDto {
   @IsNotEmpty()
   @IsNumberString()
   amount: string;
+
+  @ApiProperty({
+    description: '预算类型 0: Month 1: Year',
+    example: '1',
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  type: BudgetEntityType;
 }

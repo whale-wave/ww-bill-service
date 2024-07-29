@@ -129,6 +129,17 @@ export class BudgetController {
       patchBudgetAmountDto,
     );
 
+    if (
+      await this.budgetService.summaryBudgetAmountCheck(
+        req.user.id,
+        patchBudgetAmountDto.type,
+      )
+    ) {
+      return sendSuccess({
+        statusCode: RESPONSE_STATUS_CODE.RECALCULATE_BUDGET_SUCCESS,
+      });
+    }
+
     return sendSuccess();
   }
 }
