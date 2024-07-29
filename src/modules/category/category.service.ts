@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectLiteral, Repository } from 'typeorm';
-import { fail, getFileHash, qiniuOss } from '../../utils';
+import { FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
+import { createDefaultCategoryExpend, createDefaultCategoryIncome, fail, getFileHash, qiniuOss } from '../../utils';
 import { createCategory } from '../../utils/compatible/category';
-import {
-  createDefaultCategoryExpend,
-  createDefaultCategoryIncome,
-} from '../../utils/createDefaultCategory';
 import { User } from '../user/entity/user.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
 import { Category } from './entity/category.entity';
@@ -20,6 +16,10 @@ export class CategoryService {
     private userRepository: Repository<User>,
   ) {}
 
+  async findOne(options: FindOneOptions<Category>) {
+    return this.categoryRepository.find(options);
+  }
+
   async create(
     userId: number,
     { name }: CreateCategoryDto,
@@ -30,7 +30,8 @@ export class CategoryService {
       user,
       name,
     });
-    if (findFromName) return fail('分类名称已存在');
+    if (findFromName)
+      return fail('分类名称已存在');
 
     const { url } = await qiniuOss.uploadFile(
       file,
@@ -46,18 +47,20 @@ export class CategoryService {
   }
 
   async remove(id: string) {
-    const category = await this.findOne(id);
-    if (!category) return fail('分类不存在');
+    const category = await this.findOneById(id);
+    if (!category)
+      return fail('分类不存在');
     return this.categoryRepository.remove(category);
   }
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    const category = await this.findOne(id);
-    if (!category) return fail('分类不存在');
+    const category = await this.findOneById(id);
+    if (!category)
+      return fail('分类不存在');
     return this.categoryRepository.update(category, updateCategoryDto);
   }
 
-  findOne(id: string) {
+  findOneById(id: string) {
     return this.categoryRepository.findOne(id);
   }
 
@@ -75,13 +78,13 @@ export class CategoryService {
     if (!hasIncome) {
       await createCategory(
         this.categoryRepository,
-        createDefaultCategoryIncome(userId + ''),
+        createDefaultCategoryIncome(`${userId}`),
       );
     }
     if (!hasExpend) {
       await createCategory(
         this.categoryRepository,
-        createDefaultCategoryExpend(userId + ''),
+        createDefaultCategoryExpend(`${userId}`),
       );
     }
     const [data, total] = await this.categoryRepository.findAndCount(options);

@@ -21,7 +21,7 @@ const typeMap = {
   收入: 'add',
 };
 
-enum MoneyType {
+export enum MoneyType {
   INCOME = 'add',
   EXPEND = 'sub',
 }
@@ -36,6 +36,10 @@ export class RecordService {
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
   ) {}
+
+  findAll(options: FindOneOptions<RecordEntity>) {
+    return this.recordRepository.find(options);
+  }
 
   async create(userId: number, createRecordDto: CreateRecordDto) {
     const { time, remark, type, amount, categoryId } = createRecordDto;
@@ -70,7 +74,7 @@ export class RecordService {
     return this.recordRepository.findOne(options);
   }
 
-  async findAll(userId: number, params?: GetRecordListDto) {
+  async findAllByUserIdAndParams(userId: number, params?: GetRecordListDto) {
     const options = {
       where: [{ user: userId }],
       order: { time: 'DESC', createdAt: 'DESC' },
@@ -130,7 +134,7 @@ export class RecordService {
   async getBillRecord(id: number) {
     const { monthStart } = getTimestamp();
     const { month } = getNowTime();
-    const { expend, income } = await this.findAll(id, {
+    const { expend, income } = await this.findAllByUserIdAndParams(id, {
       startDate: monthStart,
     });
     const surplus = math.subtract(income, expend).toNumber();

@@ -20,6 +20,7 @@ import { ChartModule } from './modules/chart/chart.module';
 import { UserEmailModule } from './modules/user-email/user-email.module';
 import { UserAppConfigModule } from './modules/user-app-config/user-app-config.module';
 import { InvoiceModule } from './modules/invoice/invoice.module';
+import { BudgetModule } from './modules/budget/budget.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { InvoiceModule } from './modules/invoice/invoice.module';
     UserEmailModule,
     UserAppConfigModule,
     InvoiceModule,
+    BudgetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
