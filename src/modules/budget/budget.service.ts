@@ -10,6 +10,7 @@ import { CategoryService } from '../category/category.service';
 import { GetBudgetInfoDto } from './dto/get-budget-info.dto';
 
 export interface BudgetResult {
+  id: string;
   category?: Category;
   budgetAmount: number;
   amount: number;
@@ -48,7 +49,7 @@ export class BudgetService {
   }
 
   async createSummaryBudget(userId: number, summaryBudget: DeepPartial<BudgetEntity>): Promise<boolean> {
-    const findSummaryBudget = await this.budgetRepository.findOne({
+    const findSummaryBudget = await this.findOne({
       where: {
         user: userId,
         type: summaryBudget.type,
@@ -64,23 +65,66 @@ export class BudgetService {
     summaryBudget.level = BudgetEntityLevel.SUMMARY;
     delete summaryBudget.category;
 
-    await this.budgetRepository.save(summaryBudget);
+    await this.create(summaryBudget);
 
     return true;
   }
 
-  async summaryBudgetAmountCheck(): Promise<boolean> {
-    // TODO: 总预算金额校验
-    return false;
+  async summaryBudgetAmountCheck(userId: number, type: BudgetEntityType): Promise<boolean> {
+    const budgets = await this.findAll({
+      where: {
+        user: {
+          id: userId,
+        },
+        type,
+      },
+    });
+
+    const summaryBudget = budgets.find(budget => budget.level === BudgetEntityLevel.SUMMARY);
+
+    if (!summaryBudget) {
+      return false;
+    }
+
+    const categoryBudgets = budgets.filter(budget => budget.level === BudgetEntityLevel.CATEGORY);
+
+    if (categoryBudgets.length === 0) {
+      return false;
+    }
+
+    const categorySumAmount = categoryBudgets.reduce((s, b) => math.add(s, b.amount).toNumber(), 0);
+
+    if (Number(summaryBudget.amount) >= categorySumAmount) {
+      return false;
+    }
+
+    await this.update({ id: summaryBudget.id }, { amount: String(categorySumAmount) });
+
+    return true;
   }
 
   async createCategoryBudget(userId: number, summaryBudget: DeepPartial<BudgetEntity>): Promise<boolean> {
-    const findCategoryBudget = await this.budgetRepository.findOne({
+    const findSummaryBudget = await this.findOne({
       where: {
-        user: userId,
+        user: { id: userId },
+        type: summaryBudget.type,
+        level: BudgetEntityLevel.SUMMARY,
+      },
+    });
+
+    if (!findSummaryBudget) {
+      throwFail('请先创建总预算');
+    }
+
+    const findCategoryBudget = await this.findOne({
+      where: {
+        user: { id: userId },
         type: summaryBudget.type,
         category: summaryBudget.category,
         level: BudgetEntityLevel.CATEGORY,
+      },
+      order: {
+        createdAt: 'ASC',
       },
     });
 
@@ -91,7 +135,7 @@ export class BudgetService {
     const findCategory = await this.categoryService.findOne({
       where: {
         user: userId,
-        id: summaryBudget.category,
+        id: summaryBudget.category.id,
         type: MoneyType.EXPEND,
       },
     });
@@ -105,7 +149,7 @@ export class BudgetService {
     };
     summaryBudget.level = BudgetEntityLevel.CATEGORY;
 
-    await this.budgetRepository.save(summaryBudget);
+    await this.create(summaryBudget);
 
     return true;
   }
@@ -121,7 +165,7 @@ export class BudgetService {
 
     /* Get summary budget */
 
-    const summaryBudget = await this.budgetRepository.findOne({
+    const summaryBudget = await this.findOne({
       where: {
         user: userId,
         type: getBudgetInfoDto.type,
@@ -148,6 +192,7 @@ export class BudgetService {
     });
 
     data.summaryBudget = {
+      id: summaryBudget.id,
       budgetAmount: +summaryBudget.amount,
       amount: recordList.reduce((total, record) => math.add(total, record.amount).toNumber(), 0),
       remaining: 0,
@@ -158,7 +203,7 @@ export class BudgetService {
 
     /* Get category budget */
 
-    const categoryBudgets = await this.budgetRepository.find({
+    const categoryBudgets = await this.findAll({
       where: {
         user: userId,
         type: getBudgetInfoDto.type,
@@ -172,6 +217,7 @@ export class BudgetService {
 
       for (const categoryBudget of categoryBudgets) {
         const _categoryBudget = {
+          id: categoryBudget.id,
           category: categoryBudget.category,
           budgetAmount: +categoryBudget.amount,
           amount: recordList.filter(record => record.category.id === categoryBudget.category.id).reduce((sum, cur) => math.add(sum, cur.amount).toNumber(), 0),
@@ -189,5 +235,32 @@ export class BudgetService {
     }
 
     return data;
+  }
+
+  async clearBudget(userId: number, type: BudgetEntityType): Promise<boolean> {
+    await this.remove({
+      user: {
+        id: userId,
+      },
+      type,
+    });
+
+    return true;
+  }
+
+  async clearCategoryBudgetById(userId: number, type: BudgetEntityType, budgetId: string): Promise<boolean> {
+    await this.remove({
+      user: { id: userId },
+      id: budgetId,
+      type,
+    });
+
+    return true;
+  }
+
+  async updateBudgetAmountById(userId: number, budgetId: string, budget: DeepPartial<BudgetEntity>): Promise<boolean> {
+    await this.update({ user: { id: userId }, id: budgetId }, budget);
+
+    return true;
   }
 }
