@@ -26,12 +26,12 @@ yarn migration
 
 ### Swagger
 
-[json同步地址](http://localhost:3001/doc-json)
+json swagger: [http://localhost:3001/doc-json](http://localhost:3001/doc-json)
 
 ## Recommended version
 
-> NodeJs version 18.19.0
-> Yarn version 1.19.2
+- NodeJs version 18.19.0
+- Yarn version 1.19.2
 
 ## Related documents
 
@@ -39,3 +39,7 @@ yarn migration
 - [nest-swagger](https://docs.nestjs.com/openapi/types-and-parameters#enums-schema)
 - [nest-swagger-plugin](https://docs.nestjs.com/openapi/cli-pluginv)
 - [typeorm-v2.x](https://typeorm-legacy.productsway.com/connection-api/)
+
+## Database Structure
+
+![Database Structure](./docs/SQL.png)
