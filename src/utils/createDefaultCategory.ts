@@ -1,13 +1,13 @@
 import { defaultCategoryExpend, defaultCategoryIncome } from '../constant';
 
-export type CategoryRecord = {
+export interface CategoryRecord {
   name: string;
   icon: string;
   type: 'sub' | 'add';
   user: string | number;
-};
+}
 
-export const createDefaultCategoryExpend = (userId: string) => {
+export function createDefaultCategoryExpend(userId: string | number) {
   return defaultCategoryExpend.map((category) => {
     return {
       ...category,
@@ -15,9 +15,9 @@ export const createDefaultCategoryExpend = (userId: string) => {
       type: 'sub',
     } as CategoryRecord;
   });
-};
+}
 
-export const createDefaultCategoryIncome = (userId: string) => {
+export function createDefaultCategoryIncome(userId: string | number) {
   return defaultCategoryIncome.map((category) => {
     return {
       ...category,
@@ -25,11 +25,11 @@ export const createDefaultCategoryIncome = (userId: string) => {
       type: 'add',
     } as CategoryRecord;
   });
-};
+}
 
-export const createDefaultCategory = (userId: string) => {
+export function createDefaultCategory(userId: string | number) {
   return [
     ...createDefaultCategoryExpend(userId),
     ...createDefaultCategoryIncome(userId),
   ];
-};
+}

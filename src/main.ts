@@ -13,6 +13,7 @@ import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { AppModule } from './app.module';
 import config from './config';
+import { UserService } from './modules/user/user.service';
 
 dayjs.extend(isBetween);
 
@@ -33,8 +34,8 @@ async function bootstrap() {
   );
 
   const docConfig = new DocumentBuilder()
-    .setTitle('蓝鲸记账api文档')
-    .setDescription('技术团队：梁又文、梁金俊')
+    .setTitle('鲸浪账本api文档')
+    .setDescription('技术团队：Avan、LiangJinJun')
     .setVersion('1.0')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
@@ -44,12 +45,15 @@ async function bootstrap() {
   const options: SwaggerDocumentOptions = {
     ignoreGlobalPrefix: false,
   };
-
   const customOptions: SwaggerCustomOptions = {
-    customSiteTitle: '蓝鲸记账api文档',
+    customSiteTitle: '鲸浪账本api文档',
   };
   const document = SwaggerModule.createDocument(app, docConfig, options);
   SwaggerModule.setup('doc', app, document, customOptions);
+
+  const userService = app.get(UserService);
+  userService.createSystemAdmin();
+
   await app.listen(3001);
 }
 

@@ -35,6 +35,13 @@ export class AssetGroupEntity extends BaseColumn {
   })
   level: number;
 
+  @Column({
+    type: 'varchar',
+    comment: '父级资产组ID',
+    nullable: true,
+  })
+  parentId: string;
+
   @OneToMany('asset', 'assetGroup')
   asset: AssetEntity[];
 

@@ -24,6 +24,9 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
+  uuid: string;
+
   @Column({ default: '神奇海螺' })
   name?: string;
 
@@ -44,6 +47,9 @@ export class User {
       'https://bill-rearend.oss-cn-guangzhou.aliyuncs.com/static/defulatAvatar.jpg',
   })
   avatar?: string;
+
+  @Column({ default: false, nullable: false })
+  isSuperAdmin?: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt?: Date;

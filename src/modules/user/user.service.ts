@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createDefaultCategory } from 'src/utils/createDefaultCategory';
 import { DeepPartial, Repository } from 'typeorm';
 import { throwFail } from '../../utils';
+import config from '../../config';
+import { AssetService } from '../asset/asset.service';
 import { UpdatePasswordDto, UpdateUserInfoDto } from './dto/user.dto';
 import { User } from './entity/user.entity';
 
@@ -11,6 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private assetService: AssetService,
   ) {}
 
   findOne(userId: number) {
@@ -58,7 +61,7 @@ export class UserService {
     );
   }
 
-  async createDefaultCategory(userId: string) {
+  async createDefaultCategory(userId: string | number) {
     const user = await this.usersRepository.findOne(userId);
     if (!user)
       throwFail('用户不存在');
@@ -76,5 +79,28 @@ export class UserService {
 
   async update(filter: Record<string, any>, data: Partial<User>) {
     return this.usersRepository.update(filter, data);
+  }
+
+  async createSystemAdmin() {
+    const SUPER_ADMIN_UUID = '550e8400-e29b-41d4-a716-446655440000';
+    const user = await this.usersRepository.findOne({
+      where: { uuid: SUPER_ADMIN_UUID },
+    });
+    let userId = user?.id;
+
+    if (!user) {
+      const result = await this.usersRepository.save({
+        uuid: SUPER_ADMIN_UUID,
+        name: '超级管理员',
+        username: config.defaultAdmin.username,
+        password: config.defaultAdmin.password,
+        email: config.companyEmail,
+        isSuperAdmin: true,
+      });
+      userId = result.id;
+    }
+
+    await this.createDefaultCategory(userId);
+    await this.assetService.createDefaultAssetGroup(userId);
   }
 }

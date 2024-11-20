@@ -17,6 +17,10 @@ const {
   OSS_ALI_BUCKET,
   OSS_ALI_ACCESS_KEY_ID,
   OSS_ALI_ACCESS_KEY_SECRET,
+  // 默认管理员账号
+  DEFAULT_ADMIN_USERNAME,
+  DEFAULT_ADMIN_PASSWORD,
+  COMPANY_EMAIL,
 } = process.env;
 
 export default {
@@ -39,4 +43,9 @@ export default {
       accessKeySecret: OSS_ALI_ACCESS_KEY_SECRET || '',
     },
   },
+  defaultAdmin: {
+    username: DEFAULT_ADMIN_USERNAME || 'admin',
+    password: DEFAULT_ADMIN_PASSWORD || 'admin',
+  },
+  companyEmail: COMPANY_EMAIL || 'avan@whalewave.freeqiye.com',
 };

@@ -21,6 +21,7 @@ import { UserEmailModule } from './modules/user-email/user-email.module';
 import { UserAppConfigModule } from './modules/user-app-config/user-app-config.module';
 import { InvoiceModule } from './modules/invoice/invoice.module';
 import { BudgetModule } from './modules/budget/budget.module';
+import { AssetModule } from './modules/asset/asset.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { BudgetModule } from './modules/budget/budget.module';
     UserAppConfigModule,
     InvoiceModule,
     BudgetModule,
+    AssetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
