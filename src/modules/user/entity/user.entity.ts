@@ -17,6 +17,7 @@ import { Topic, TopicLike } from '../../topic/entty/topic.entity';
 import { UserAppConfig } from '../../../entity/UserAppConfig.entity';
 import { Invoice } from '../../../entity/Invoice.entity';
 import { BudgetEntity } from '../../../entity/budget.entity';
+import { AssetEntity, AssetGroupEntity, AssetRecordEntity } from '../../../entity';
 
 @Entity()
 export class User {
@@ -82,4 +83,13 @@ export class User {
 
   @OneToMany('budget', 'user')
   budget: BudgetEntity[];
+
+  @OneToMany('asset', 'user')
+  asset: AssetEntity[];
+
+  @OneToMany('asset_record', 'user')
+  assetRecord: AssetRecordEntity[];
+
+  @OneToMany('asset_group', 'user')
+  assetGroup: AssetGroupEntity[];
 }
