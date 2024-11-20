@@ -110,9 +110,8 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "volta": {
-    "node": "18.19.0",
-    "yarn": "1.19.2"
+  "engines": {
+    "node": "18.19.0"
   },
   "lint-staged": {
     "*": "eslint --fix"
