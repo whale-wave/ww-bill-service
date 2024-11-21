@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Put, Req, UseGuards, forwardRef } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { fail, success, updated } from '../../utils';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -13,6 +13,7 @@ import { UserService } from './user.service';
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(
+    @Inject(forwardRef(() => UserService))
     private readonly usersService: UserService,
     private readonly checkInService: CheckInService,
     private readonly recordService: RecordService,

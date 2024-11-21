@@ -1,5 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { sendSuccess } from '../../utils/response';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AssetService } from './asset.service';
 
@@ -17,8 +18,11 @@ export class AssetController {
   // 获取资产记录列表
   @ApiOperation({ summary: '获取资产分组列表' })
   @Get('group')
-  getAssetGroupList() {
-    return this.assetService.getAssetGroupList();
+  async getAssetGroupList() {
+    const assetGroupList = await this.assetService.getAssetGroupList();
+    return sendSuccess({
+      data: assetGroupList,
+    });
   }
 
   // 获取资产分组列表

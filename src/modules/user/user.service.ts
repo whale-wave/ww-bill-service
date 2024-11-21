@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createDefaultCategory } from 'src/utils/createDefaultCategory';
 import { DeepPartial, Repository } from 'typeorm';
@@ -13,6 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => AssetService))
     private assetService: AssetService,
   ) {}
 
@@ -111,5 +112,11 @@ export class UserService {
     // TODO: 创建默认分类
     // await this.createDefaultCategory(userId);
     await this.assetService.createDefaultAssetGroup(userId);
+  }
+
+  getSystemUserInfo() {
+    return this.usersRepository.findOne({
+      where: { isSuperAdmin: true },
+    });
   }
 }
