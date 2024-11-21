@@ -28,6 +28,10 @@ export class AssetController {
   // 获取资产分组列表
 
   // 创建资产
+  @Post()
+  async createAsset(@Body() createAssetDto: CreateAssetDto) {
+    return this.assetService.createAsset(createAssetDto);
+  }
 
   // 更新资产
 

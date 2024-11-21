@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateAssetDto } from './create-asset.dto';
+import { CreateAssetDto } from './index';
 
 export class UpdateAssetDto extends PartialType(CreateAssetDto) {}
