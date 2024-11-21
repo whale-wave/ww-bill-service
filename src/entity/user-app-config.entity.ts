@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../modules/user/entity/user.entity';
 
-@Entity()
-export class UserAppConfig {
+@Entity('user_app_config')
+export class UserAppConfigEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

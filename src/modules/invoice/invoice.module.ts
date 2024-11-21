@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Invoice } from '../../entity/Invoice.entity';
+import { InvoiceEntity } from '../../entity';
 import { InvoiceService } from './invoice.service';
 import { InvoiceController } from './invoice.controller';
 
@@ -8,6 +8,6 @@ import { InvoiceController } from './invoice.controller';
   controllers: [InvoiceController],
   providers: [InvoiceService],
   exports: [InvoiceService],
-  imports: [TypeOrmModule.forFeature([Invoice])],
+  imports: [TypeOrmModule.forFeature([InvoiceEntity])],
 })
 export class InvoiceModule {}

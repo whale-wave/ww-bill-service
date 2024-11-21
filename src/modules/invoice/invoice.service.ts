@@ -1,33 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { DeepPartial, FindConditions, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Invoice } from '../../entity/Invoice.entity';
+import { InvoiceEntity } from '../../entity';
 
 @Injectable()
 export class InvoiceService {
   constructor(
-    @InjectRepository(Invoice)
-    private readonly invoiceRepository: Repository<Invoice>,
+    @InjectRepository(InvoiceEntity)
+    private readonly invoiceRepository: Repository<InvoiceEntity>,
   ) {
   }
 
-  create(invoice: DeepPartial<Invoice>) {
+  create(invoice: DeepPartial<InvoiceEntity>) {
     return this.invoiceRepository.save(invoice);
   }
 
-  findAll(options: FindManyOptions<Invoice>) {
+  findAll(options: FindManyOptions<InvoiceEntity>) {
     return this.invoiceRepository.find(options);
   }
 
-  findOne(options: FindOneOptions<Invoice>) {
+  findOne(options: FindOneOptions<InvoiceEntity>) {
     return this.invoiceRepository.findOne(options);
   }
 
-  update(options: FindConditions<Invoice>, updateInvoice: DeepPartial<Invoice>) {
+  update(options: FindConditions<InvoiceEntity>, updateInvoice: DeepPartial<InvoiceEntity>) {
     return this.invoiceRepository.update(options, updateInvoice);
   }
 
-  remove(options: FindConditions<Invoice>) {
+  remove(options: FindConditions<InvoiceEntity>) {
     return this.invoiceRepository.delete(options);
   }
 }

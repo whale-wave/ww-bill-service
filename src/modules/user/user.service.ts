@@ -82,25 +82,34 @@ export class UserService {
   }
 
   async createSystemAdmin() {
+    const { username, password } = config.defaultAdmin;
+
+    if (!username || !password) {
+      console.error('系统管理员配置错误，请检查 .env 文件');
+      process.exit(1);
+    };
+
     const SUPER_ADMIN_UUID = '550e8400-e29b-41d4-a716-446655440000';
     const user = await this.usersRepository.findOne({
       where: { uuid: SUPER_ADMIN_UUID },
     });
+
     let userId = user?.id;
 
     if (!user) {
       const result = await this.usersRepository.save({
         uuid: SUPER_ADMIN_UUID,
         name: '超级管理员',
-        username: config.defaultAdmin.username,
-        password: config.defaultAdmin.password,
+        username,
+        password,
         email: config.companyEmail,
         isSuperAdmin: true,
       });
       userId = result.id;
     }
 
-    await this.createDefaultCategory(userId);
+    // TODO: 创建默认分类
+    // await this.createDefaultCategory(userId);
     await this.assetService.createDefaultAssetGroup(userId);
   }
 }

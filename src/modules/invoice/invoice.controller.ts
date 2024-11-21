@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FindConditions } from 'typeorm';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RESPONSE_STATUS_CODE, sendError, sendSuccess } from '../../utils';
-import { Invoice } from '../../entity/Invoice.entity';
+import { InvoiceEntity } from '../../entity';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
@@ -73,7 +73,7 @@ export class InvoiceController {
     const where = {
       id,
       user: req.user.id,
-    } as FindConditions<Invoice>;
+    } as FindConditions<InvoiceEntity>;
 
     const invoice = await this.invoiceService.findOne({
       where,
@@ -99,7 +99,7 @@ export class InvoiceController {
     const where = {
       id,
       user: req.user.id,
-    } as FindConditions<Invoice>;
+    } as FindConditions<InvoiceEntity>;
 
     const invoice = await this.invoiceService.findOne({
       where,

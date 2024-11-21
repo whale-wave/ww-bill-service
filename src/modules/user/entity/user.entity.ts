@@ -14,18 +14,18 @@ import { Record } from '../../record/entity/record.entity';
 import { SystemNotify } from '../../system-notify/entity/system-notify.entity';
 import { Comment } from '../../topic/entty/comment.entity';
 import { Topic, TopicLike } from '../../topic/entty/topic.entity';
-import { UserAppConfig } from '../../../entity/UserAppConfig.entity';
-import { Invoice } from '../../../entity/Invoice.entity';
-import { BudgetEntity } from '../../../entity/budget.entity';
-import { AssetEntity, AssetGroupEntity, AssetRecordEntity } from '../../../entity';
+import { AssetEntity, AssetGroupEntity, AssetRecordEntity, BudgetEntity, InvoiceEntity, UserAppConfigEntity } from '../../../entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
-  uuid: string;
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  uuid?: string;
 
   @Column({ default: '神奇海螺' })
   name?: string;
@@ -81,11 +81,11 @@ export class User {
   @OneToMany('SystemNotify', 'user')
   systemNotifies?: SystemNotify[];
 
-  @OneToOne('UserAppConfig', 'user')
-  userAppConfig: UserAppConfig;
+  @OneToOne('user_app_config', 'user')
+  userAppConfig: UserAppConfigEntity;
 
-  @OneToMany('Invoice', 'user')
-  invoice: Invoice[];
+  @OneToMany('invoice', 'user')
+  invoice: InvoiceEntity[];
 
   @OneToMany('budget', 'user')
   budget: BudgetEntity[];

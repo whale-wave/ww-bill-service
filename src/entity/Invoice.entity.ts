@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../modules/user/entity/user.entity';
 
-@Entity()
-export class Invoice {
+@Entity('invoice')
+export class InvoiceEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

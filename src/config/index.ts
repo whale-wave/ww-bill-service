@@ -44,8 +44,8 @@ export default {
     },
   },
   defaultAdmin: {
-    username: DEFAULT_ADMIN_USERNAME || 'admin',
-    password: DEFAULT_ADMIN_PASSWORD || 'admin',
+    username: DEFAULT_ADMIN_USERNAME || '',
+    password: DEFAULT_ADMIN_PASSWORD || '',
   },
   companyEmail: COMPANY_EMAIL || 'avan@whalewave.freeqiye.com',
 };

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserAppConfig } from '../../entity/UserAppConfig.entity';
+import { UserAppConfigEntity } from '../../entity';
 import { UserAppConfigService } from './user-app-config.service';
 import { UserAppConfigController } from './user-app-config.controller';
 
@@ -8,7 +8,7 @@ import { UserAppConfigController } from './user-app-config.controller';
   controllers: [UserAppConfigController],
   providers: [UserAppConfigService],
   exports: [UserAppConfigService],
-  imports: [TypeOrmModule.forFeature([UserAppConfig])],
+  imports: [TypeOrmModule.forFeature([UserAppConfigEntity])],
 })
 export class UserAppConfigModule {
 }
