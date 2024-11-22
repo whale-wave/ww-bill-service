@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -82,11 +83,25 @@ export class AssetController {
     return sendSuccess();
   }
 
+  @ApiOperation({ summary: '获取资产详情' })
+  @Get(':assetId')
+  async getAsset(@Req() req: any, @Param('assetId') assetId: string) {
+    const asset = await this.assetService.findOneAsset(req.user.id, assetId);
+    return sendSuccess({ data: asset });
+  }
+
   @ApiOperation({ summary: '获取资产列表' })
   @Get()
   async getAssetList(@Req() req: any) {
     const list = await this.assetService.findAssetList(req.user.id);
     return sendSuccess({ data: list });
+  }
+
+  @ApiOperation({ summary: '删除资产' })
+  @Delete(':assetId')
+  async deleteAsset(@Req() req: any, @Param('assetId') assetId: string) {
+    await this.assetService.deleteAsset(req.user.id, assetId);
+    return sendSuccess();
   }
 
   // 删除资产

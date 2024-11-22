@@ -69,6 +69,15 @@ export class AssetService {
     return this.assetRepository.find({ where: { user: { id: userId } }, relations: ['assetGroup'] });
   }
 
+  async findOneAsset(userId: number, assetId: string) {
+    return this.assetRepository.findOne({ where: { user: { id: userId }, id: assetId }, relations: ['assetGroup'] });
+  }
+
+  async deleteAsset(userId: number, assetId: string) {
+    await this.assetRecordRepository.delete({ asset: { id: assetId, user: { id: userId } } });
+    return this.assetRepository.delete({ user: { id: userId }, id: assetId });
+  }
+
   async adjustAsset(userId: number, assetId: string, adjustAssetDto: AdjustAssetDto) {
     const asset = await this.assetRepository.findOne({ where: { user: { id: userId }, id: assetId } });
 
