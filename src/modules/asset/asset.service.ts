@@ -54,7 +54,7 @@ export class AssetService {
         user: { id: userId },
         id: assetRecordId,
       },
-      relations: ['assetGroup'],
+      relations: ['asset', 'asset.assetGroup'],
     });
   }
 
