@@ -47,6 +47,7 @@ export class AssetService {
     assetRecordEntity.comment = `从 ${assetRecordEntity.beforeAmount} 调整为 ${assetRecordEntity.afterAmount}`;
     assetRecordEntity.asset = asset;
     assetRecordEntity.user = { id: userId } as User;
+    await this.assetRecordRepository.save(assetRecordEntity);
   }
 
   findAll() {
