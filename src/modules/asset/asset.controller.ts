@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { sendSuccess } from '../../utils/response';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AssetService } from './asset.service';
+import { CreateAssetDto } from './dto';
 
 @ApiTags('asset')
 @ApiBearerAuth('Token')
@@ -29,8 +30,9 @@ export class AssetController {
 
   // 创建资产
   @Post()
-  async createAsset(@Body() createAssetDto: CreateAssetDto) {
-    return this.assetService.createAsset(createAssetDto);
+  async createAsset(@Req() req: any, @Body() createAssetDto: CreateAssetDto) {
+    await this.assetService.createAsset(req.user.id, createAssetDto);
+    return sendSuccess();
   }
 
   // 更新资产

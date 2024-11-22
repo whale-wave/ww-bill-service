@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { AssetEntity, AssetGroupEntity, AssetRecordEntity } from 'src/entity';
 import { User } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
-import { CreateAssetDto } from './dto/create-asset.dto';
+import { CreateAssetDto } from './dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
 
 @Injectable()
@@ -29,8 +29,24 @@ export class AssetService {
     return assetGroups;
   }
 
-  create(createAssetDto: CreateAssetDto) {
-    return `This action adds a new asset, ${JSON.stringify(createAssetDto)}`;
+  async createAsset(userId: number, createAssetDto: CreateAssetDto) {
+    const assetEntity = new AssetEntity();
+    assetEntity.name = createAssetDto.name;
+    assetEntity.comment = createAssetDto.comment;
+    assetEntity.amount = createAssetDto.amount;
+    assetEntity.assetGroup = { id: createAssetDto.groupId } as AssetGroupEntity;
+    assetEntity.user = { id: userId } as User;
+    const asset = await this.assetRepository.save(assetEntity);
+
+    const assetRecordEntity = new AssetRecordEntity();
+    assetRecordEntity.name = '手动调整余额';
+    assetRecordEntity.type = 'add';
+    assetRecordEntity.amount = createAssetDto.amount;
+    assetRecordEntity.beforeAmount = '0';
+    assetRecordEntity.afterAmount = createAssetDto.amount;
+    assetRecordEntity.comment = `从 ${assetRecordEntity.beforeAmount} 调整为 ${assetRecordEntity.afterAmount}`;
+    assetRecordEntity.asset = asset;
+    assetRecordEntity.user = { id: userId } as User;
   }
 
   findAll() {

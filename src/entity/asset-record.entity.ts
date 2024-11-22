@@ -20,7 +20,7 @@ export class AssetRecordEntity extends BaseColumn {
   type: string;
 
   @Column({
-    enum: ['sub', 'add'],
+    type: 'varchar',
     comment: '资产操作备注',
     nullable: false,
   })
@@ -32,6 +32,20 @@ export class AssetRecordEntity extends BaseColumn {
     nullable: false,
   })
   amount: string;
+
+  @Column({
+    type: 'varchar',
+    comment: '调整前金额',
+    nullable: false,
+  })
+  beforeAmount: string;
+
+  @Column({
+    type: 'varchar',
+    comment: '调整后金额',
+    nullable: false,
+  })
+  afterAmount: string;
 
   @ManyToOne('asset', 'id')
   asset: AssetEntity;

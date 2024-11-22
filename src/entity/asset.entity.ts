@@ -23,13 +23,6 @@ export class AssetEntity extends BaseColumn {
 
   @Column({
     type: 'varchar',
-    comment: '资产图标',
-    nullable: false,
-  })
-  icon: string;
-
-  @Column({
-    type: 'varchar',
     comment: '资产剩余金额',
     nullable: false,
   })
