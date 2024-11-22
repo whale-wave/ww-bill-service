@@ -1,7 +1,8 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createDefaultCategory } from 'src/utils/createDefaultCategory';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, FindConditions, Repository, UpdateResult } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { throwFail } from '../../utils';
 import config from '../../config';
 import { AssetService } from '../asset/asset.service';
@@ -78,7 +79,7 @@ export class UserService {
     return this.usersRepository.update({ email }, { password });
   }
 
-  async update(filter: Record<string, any>, data: Partial<User>) {
+  async update(filter: FindConditions<User>, data: QueryDeepPartialEntity<User>): Promise<UpdateResult> {
     return this.usersRepository.update(filter, data);
   }
 

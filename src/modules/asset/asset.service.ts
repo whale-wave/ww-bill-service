@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AssetEntity, AssetGroupEntity, AssetRecordEntity } from 'src/entity';
+import { math } from 'src/utils';
 import { User } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
-import { CreateAssetDto } from './dto';
-import { UpdateAssetDto } from './dto/update-asset.dto';
+import { AdjustAssetDto, CreateAssetDto } from './dto';
 
 @Injectable()
 export class AssetService {
@@ -22,9 +22,7 @@ export class AssetService {
   async getAssetGroupList() {
     const systemUserInfo = await this.userService.getSystemUserInfo();
     const assetGroups = await this.assetGroupRepository.find({
-      where: [
-        { user: { id: systemUserInfo.id } },
-      ],
+      where: [{ user: { id: systemUserInfo.id } }],
     });
     return assetGroups;
   }
@@ -50,20 +48,46 @@ export class AssetService {
     await this.assetRecordRepository.save(assetRecordEntity);
   }
 
-  findAll() {
-    return `This action returns all asset`;
+  async findOneAssetRecord(userId: number, assetRecordId: string) {
+    return await this.assetRecordRepository.findOne({
+      where: {
+        user: { id: userId },
+        id: assetRecordId,
+      },
+      relations: ['assetGroup'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} asset`;
+  async findAssetRecordList(userId: number) {
+    return await this.assetRecordRepository.find({
+      where: { user: { id: userId } },
+      relations: ['asset', 'asset.assetGroup'],
+    });
   }
 
-  update(id: number, updateAssetDto: UpdateAssetDto) {
-    return `This action updates a #${id} asset, ${JSON.stringify(updateAssetDto)}`;
+  async findAssetList(userId: number) {
+    return this.assetRepository.find({ where: { user: { id: userId } }, relations: ['assetGroup'] });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} asset`;
+  async adjustAsset(userId: number, assetId: string, adjustAssetDto: AdjustAssetDto) {
+    const asset = await this.assetRepository.findOne({ where: { user: { id: userId }, id: assetId } });
+
+    const operationAmount = math.subtract(adjustAssetDto.amount || asset.amount, asset.amount).toNumber();
+    if (operationAmount !== 0) {
+      const assetRecord = new AssetRecordEntity();
+      assetRecord.name = '手动调整余额';
+      assetRecord.type = operationAmount > 0 ? 'add' : 'sub';
+      assetRecord.amount = operationAmount.toString();
+      assetRecord.beforeAmount = asset.amount;
+      assetRecord.afterAmount = adjustAssetDto.amount;
+      assetRecord.comment = `从 ${assetRecord.beforeAmount} 调整为 ${assetRecord.afterAmount}`;
+      assetRecord.user = { id: userId } as User;
+      assetRecord.asset = asset;
+
+      await this.assetRecordRepository.save(assetRecord);
+    }
+
+    await this.assetRepository.update(assetId, adjustAssetDto);
   }
 
   async createDefaultAssetGroup(superAdminId: number) {

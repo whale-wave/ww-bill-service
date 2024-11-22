@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DeepPartial, FindConditions, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { UserAppConfigEntity } from '../../entity';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class UserAppConfigService {
     return this.userAppConfigRepository.findOne(options);
   }
 
-  update(options: FindConditions<UserAppConfigEntity>, userAppConfig: DeepPartial<UserAppConfigEntity>) {
+  update(options: FindConditions<UserAppConfigEntity>, userAppConfig: QueryDeepPartialEntity<UserAppConfigEntity>) {
     return this.userAppConfigRepository.update(options, userAppConfig);
   }
 

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Between, DeepPartial, FindConditions, FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { BudgetEntity, BudgetEntityLevel, BudgetEntityType } from '../../entity/budget.entity';
 import { Category } from '../category/entity/category.entity';
 import { MoneyType, RecordService } from '../record/record.service';
@@ -40,7 +41,7 @@ export class BudgetService {
     return this.budgetRepository.findOne(options);
   }
 
-  update(options: FindConditions<BudgetEntity>, updateBudgetDto: DeepPartial<BudgetEntity>) {
+  update(options: FindConditions<BudgetEntity>, updateBudgetDto: QueryDeepPartialEntity<BudgetEntity>) {
     return this.budgetRepository.update(options, updateBudgetDto);
   }
 
@@ -258,7 +259,7 @@ export class BudgetService {
     return true;
   }
 
-  async updateBudgetAmountById(userId: number, budgetId: string, budget: DeepPartial<BudgetEntity>): Promise<boolean> {
+  async updateBudgetAmountById(userId: number, budgetId: string, budget: QueryDeepPartialEntity<BudgetEntity>): Promise<boolean> {
     await this.update({ user: { id: userId }, id: budgetId }, budget);
 
     return true;

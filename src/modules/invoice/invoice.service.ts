@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DeepPartial, FindConditions, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { InvoiceEntity } from '../../entity';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class InvoiceService {
     return this.invoiceRepository.findOne(options);
   }
 
-  update(options: FindConditions<InvoiceEntity>, updateInvoice: DeepPartial<InvoiceEntity>) {
+  update(options: FindConditions<InvoiceEntity>, updateInvoice: QueryDeepPartialEntity<InvoiceEntity>) {
     return this.invoiceRepository.update(options, updateInvoice);
   }
 
