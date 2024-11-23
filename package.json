@@ -1,6 +1,6 @@
 {
   "name": "ww-bill-service",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "author": "",
   "private": true,
@@ -113,7 +113,7 @@
     }
   },
   "engines": {
-    "node": "18.19.0"
+    "node": ">=18.19.0 <19.0.0"
   },
   "lint-staged": {
     "*": "eslint --fix"
