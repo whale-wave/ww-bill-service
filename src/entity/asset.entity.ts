@@ -28,6 +28,14 @@ export class AssetEntity extends BaseColumn {
   })
   amount: string;
 
+  @Column({
+    type: 'varchar',
+    comment: '卡号',
+    nullable: false,
+    default: '',
+  })
+  cardId?: string;
+
   @OneToMany('asset_record', 'asset')
   assetRecord: AssetRecordEntity[];
 

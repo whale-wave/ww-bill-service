@@ -1,5 +1,6 @@
-import { ApiProperty, ApiPropertyOptional, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, IntersectionType, PartialType, PickType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import { StartEndTimeQueryDto } from 'src/dto';
 
 export class CreateAssetRecordDto {
   @ApiProperty({
@@ -48,6 +49,7 @@ export class UpdateAssetRecordDto extends PartialType(
   PickType(CreateAssetRecordDto, ['amount', 'comment', 'name']),
 ) {}
 
-export class GetAssetRecordQueryDto extends PickType(CreateAssetRecordDto, [
-  'assetId',
-]) {}
+export class GetAssetRecordQueryDto extends IntersectionType(
+  PickType(CreateAssetRecordDto, ['assetId']),
+  StartEndTimeQueryDto,
+) {}

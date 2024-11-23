@@ -12,8 +12,10 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isEmpty } from 'lodash';
+import { Between, FindConditions, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { sendError, sendSuccess } from '../../utils/response';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AssetRecordEntity } from '../../entity';
 import { AssetService } from './asset.service';
 import { AdjustAssetDto, CreateAssetDto, GetAssetRecordQueryDto } from './dto';
 
@@ -23,6 +25,13 @@ import { AdjustAssetDto, CreateAssetDto, GetAssetRecordQueryDto } from './dto';
 @Controller('asset')
 export class AssetController {
   constructor(private readonly assetService: AssetService) {}
+
+  @ApiOperation({ summary: '获取资产分组详情' })
+  @Get('group/:assetGroupId')
+  async getAssetGroup(@Req() req: any, @Param('assetGroupId') assetGroupId: string) {
+    const assetGroup = await this.assetService.getAssetGroup(req.user.id, assetGroupId);
+    return sendSuccess({ data: assetGroup });
+  }
 
   @ApiOperation({ summary: '获取资产分组列表' })
   @Get('group')
@@ -54,9 +63,14 @@ export class AssetController {
   @ApiOperation({ summary: '获取资产记录列表' })
   @Get('/record')
   async getAssetRecordAll(@Req() req: any, @Query() getAssetRecordQueryDto: GetAssetRecordQueryDto) {
-    const assetRecordList = await this.assetService.findAssetRecordList(req.user.id, {
-      asset: { id: getAssetRecordQueryDto.assetId },
-    });
+    const { startTime, endTime, assetId } = getAssetRecordQueryDto;
+    const findConditions: FindConditions<AssetRecordEntity> = { asset: { id: assetId } };
+
+    if (startTime && endTime) {
+      findConditions.createdAt = Between(new Date(Number(startTime)), new Date(Number(endTime)));
+    }
+
+    const assetRecordList = await this.assetService.findAssetRecordList(req.user.id, findConditions);
     return sendSuccess({ data: assetRecordList });
   }
 
