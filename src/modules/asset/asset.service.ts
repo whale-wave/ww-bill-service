@@ -435,7 +435,7 @@ export class AssetService {
       },
       {
         id: 'bdd0089d-4664-49aa-bd8d-1b7113af2fdd',
-        name: '资产账户',
+        name: '投资账户',
         icon: 'asset-account',
         description: '股票/基金/P2P',
         type: AssetGroupType.ADD,
