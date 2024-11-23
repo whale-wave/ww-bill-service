@@ -1,8 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBooleanString, IsOptional } from 'class-validator';
-import { QueryDto } from '../../../dto/query.dto';
+import { PageQueryDto } from '../../../dto/page-query.dto';
 
-export class GetTopicListQueryDto extends QueryDto {
+export class GetTopicListQueryDto extends PageQueryDto {
   @ApiPropertyOptional({
     description: '是否推荐',
     example: 'false',

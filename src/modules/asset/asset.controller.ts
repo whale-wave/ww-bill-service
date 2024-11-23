@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,7 +15,7 @@ import { isEmpty } from 'lodash';
 import { sendError, sendSuccess } from '../../utils/response';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AssetService } from './asset.service';
-import { AdjustAssetDto, CreateAssetDto } from './dto';
+import { AdjustAssetDto, CreateAssetDto, GetAssetRecordQueryDto } from './dto';
 
 @ApiTags('asset')
 @ApiBearerAuth('Token')
@@ -52,8 +53,10 @@ export class AssetController {
 
   @ApiOperation({ summary: '获取资产记录列表' })
   @Get('/record')
-  async getAssetRecordAll(@Req() req: any) {
-    const assetRecordList = await this.assetService.findAssetRecordList(req.user.id);
+  async getAssetRecordAll(@Req() req: any, @Query() getAssetRecordQueryDto: GetAssetRecordQueryDto) {
+    const assetRecordList = await this.assetService.findAssetRecordList(req.user.id, {
+      asset: { id: getAssetRecordQueryDto.assetId },
+    });
     return sendSuccess({ data: assetRecordList });
   }
 

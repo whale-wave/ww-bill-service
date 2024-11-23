@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType, PickType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class CreateAssetRecordDto {
@@ -26,7 +26,7 @@ export class CreateAssetRecordDto {
   @IsString()
   amount: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '资产记录备注',
     example: '0',
     type: String,
@@ -44,4 +44,10 @@ export class CreateAssetRecordDto {
   assetId: string;
 }
 
-export class UpdateAssetRecordDto extends PartialType(PickType(CreateAssetRecordDto, ['amount', 'comment', 'name'])) {}
+export class UpdateAssetRecordDto extends PartialType(
+  PickType(CreateAssetRecordDto, ['amount', 'comment', 'name']),
+) {}
+
+export class GetAssetRecordQueryDto extends PickType(CreateAssetRecordDto, [
+  'assetId',
+]) {}

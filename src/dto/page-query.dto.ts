@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumberString, IsOptional } from 'class-validator';
 
-export class QueryDto {
+export class PageQueryDto {
   @ApiPropertyOptional({
     description: '当前页数',
     example: 1,

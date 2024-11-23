@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindConditions, Repository } from 'typeorm';
 import { AssetEntity, AssetGroupEntity, AssetRecordEntity } from 'src/entity';
 import { math } from 'src/utils';
 import { User } from '../user/entity/user.entity';
@@ -58,9 +58,10 @@ export class AssetService {
     });
   }
 
-  async findAssetRecordList(userId: number) {
+  async findAssetRecordList(userId: number, findConditions: FindConditions<AssetRecordEntity>) {
     return await this.assetRecordRepository.find({
-      where: { user: { id: userId } },
+      where: { user: { id: userId }, ...findConditions },
+      order: { createdAt: 'DESC' },
       relations: ['asset', 'asset.assetGroup'],
     });
   }
