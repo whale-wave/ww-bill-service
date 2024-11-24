@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, IntersectionType, PartialType, PickType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class CreateAssetDto {
@@ -45,4 +45,7 @@ export class CreateAssetDto {
   groupId: string;
 }
 
-export class AdjustAssetDto extends PickType(CreateAssetDto, ['amount', 'comment', 'name', 'cardId']) { }
+export class AdjustAssetDto extends IntersectionType(
+  PartialType(PickType(CreateAssetDto, ['comment', 'name', 'cardId'])),
+  PickType(CreateAssetDto, ['amount']),
+) {}
