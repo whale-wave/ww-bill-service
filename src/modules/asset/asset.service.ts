@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, FindConditions, Repository } from 'typeorm';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { mathHelper } from '../../utils';
 import { AssetEntity, AssetGroupAssetType, AssetGroupEntity, AssetGroupType, AssetRecordEntity, AssetStatisticalRecord, AssetStatisticalRecordType } from '../../entity';
 import { User } from '../user/entity/user.entity';
@@ -532,6 +532,7 @@ export class AssetService {
       where: {
         user: { id: userId } as User,
       },
+      relations: ['assetGroup'],
     });
 
     const assetAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.ADD).reduce((acc, cur) => mathHelper.add(acc, cur.amount).toString(), '0');
@@ -542,7 +543,7 @@ export class AssetService {
       where: {
         user: { id: userId } as User,
         type: AssetStatisticalRecordType.ASSET,
-        createdAt: Between(dayjs().startOf('day').valueOf(), dayjs().endOf('day').valueOf()),
+        createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
       },
     });
 
@@ -562,7 +563,7 @@ export class AssetService {
       where: {
         user: { id: userId } as User,
         type: AssetStatisticalRecordType.LIABILITY,
-        createdAt: Between(dayjs().startOf('day').valueOf(), dayjs().endOf('day').valueOf()),
+        createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
       },
     });
 
@@ -582,7 +583,7 @@ export class AssetService {
       where: {
         user: { id: userId } as User,
         type: AssetStatisticalRecordType.NET_ASSET,
-        createdAt: Between(dayjs().startOf('day').valueOf(), dayjs().endOf('day').valueOf()),
+        createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
       },
     });
 
