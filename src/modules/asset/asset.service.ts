@@ -22,6 +22,18 @@ export class AssetService {
     private userService: UserService,
   ) {}
 
+  async getAssetStatisticalRecordList(userId: number, findConditions: FindConditions<AssetStatisticalRecord>) {
+    return await this.assetStatisticalRecordRepository.find({
+      where: {
+        user: { id: userId },
+        ...findConditions,
+      },
+      order: {
+        createdAt: 'ASC',
+      },
+    });
+  }
+
   async getAssetGroup(userId: number, assetGroupId: string) {
     const systemUserInfo = await this.userService.getSystemUserInfo();
     return this.assetGroupRepository.findOne({

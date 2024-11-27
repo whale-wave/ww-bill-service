@@ -12,12 +12,12 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isEmpty } from 'lodash';
-import { Between, FindConditions, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, FindConditions } from 'typeorm';
 import { sendError, sendSuccess } from '../../utils/response';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AssetRecordEntity } from '../../entity';
 import { AssetService } from './asset.service';
-import { AdjustAssetDto, CreateAssetDto, GetAssetRecordQueryDto } from './dto';
+import { AdjustAssetDto, CreateAssetDto, GetAssetRecordQueryDto, GetAssetStatisticalRecordQueryDto } from './dto';
 
 @ApiTags('asset')
 @ApiBearerAuth('Token')
@@ -25,6 +25,18 @@ import { AdjustAssetDto, CreateAssetDto, GetAssetRecordQueryDto } from './dto';
 @Controller('asset')
 export class AssetController {
   constructor(private readonly assetService: AssetService) {}
+
+  @ApiOperation({ summary: '获取资产统计记录列表' })
+  @Get('statistical')
+  async getAssetStatisticalRecord(@Req() req: any, @Query() getAssetStatisticalRecordQueryDto: GetAssetStatisticalRecordQueryDto) {
+    const { type, startTime, endTime } = getAssetStatisticalRecordQueryDto;
+    const statisticalRecord = await this.assetService.getAssetStatisticalRecordList(req.user.id, {
+      type,
+      createdAt: Between(new Date(Number(startTime)), new Date(Number(endTime))),
+    });
+
+    return sendSuccess({ data: statisticalRecord });
+  }
 
   @ApiOperation({ summary: '获取资产分组详情' })
   @Get('group/:assetGroupId')
