@@ -1,23 +1,31 @@
-import math, { MathType } from 'mathjs';
+import * as math from 'mathjs';
 
-export default {
-  add<T extends MathType>(num1: T, num2: T) {
-    return math.add(num1, num2);
-  },
-  subtract<T extends MathType>(num1: T, num2: T) {
-    return math.subtract(num1, num2);
-  },
-  multiply<T extends MathType>(num1: T, num2: T) {
-    return math.multiply(num1, num2);
-  },
-  divide<T extends MathType>(num1: T, num2: T) {
-    return math.divide(num1, num2);
-  },
-  toBigNumber(num: string | number) {
+type MathType = math.BigNumber | number | string;
+
+class MathHelper {
+  add(num1: MathType, num2: MathType) {
+    return math.add(this.toBigNumber(num1), this.toBigNumber(num2));
+  }
+
+  subtract(num1: MathType, num2: MathType) {
+    return math.subtract(this.toBigNumber(num1), this.toBigNumber(num2));
+  }
+
+  multiply(num1: MathType, num2: MathType) {
+    return math.multiply(this.toBigNumber(num1), this.toBigNumber(num2)) as math.BigNumber;
+  }
+
+  divide(num1: MathType, num2: MathType) {
+    return math.divide(this.toBigNumber(num1), this.toBigNumber(num2)) as math.BigNumber;
+  }
+
+  toBigNumber(num: MathType) {
     return math.bignumber(num);
-  },
-};
+  }
+}
 
 export function fillZero(num: number) {
   return num < 10 ? `0${num}` : num;
 }
+
+export const mathHelper = new MathHelper();

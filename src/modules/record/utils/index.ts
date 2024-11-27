@@ -1,5 +1,5 @@
 import * as dayjs from 'dayjs';
-import { math } from '../../../utils';
+import { mathHelper } from '../../../utils';
 import { RecordType } from '../../../types';
 import { Record } from '../entity/record.entity';
 
@@ -7,10 +7,10 @@ export function calcRecordListAmount(recordList: Record[]) {
   const { income, expand } = recordList.reduce(
     (res, i) => {
       if (i.type === RecordType.EXPEND) {
-        res.expand = math.add(res.expand, i.amount).toNumber();
+        res.expand = mathHelper.add(res.expand, i.amount).toNumber();
       }
       else if (i.type === RecordType.INCOME) {
-        res.income = math.add(res.income, i.amount).toNumber();
+        res.income = mathHelper.add(res.income, i.amount).toNumber();
       }
       return res;
     },
@@ -19,7 +19,7 @@ export function calcRecordListAmount(recordList: Record[]) {
   return {
     income,
     expand,
-    balance: math.subtract(income, expand).toNumber(),
+    balance: mathHelper.subtract(income, expand).toNumber(),
   };
 }
 
@@ -38,27 +38,27 @@ export function calcEachMonthAmount(data: any) {
     pre[cur] = monthList[cur].reduce(
       (res, [type, amount]) => {
         if (type === RecordType.EXPEND) {
-          res.expand = math.add(res.expand, amount).toNumber();
+          res.expand = mathHelper.add(res.expand, amount).toNumber();
         }
         else if (type === RecordType.INCOME) {
-          res.income = math.add(res.income, amount).toNumber();
+          res.income = mathHelper.add(res.income, amount).toNumber();
         }
         return res;
       },
       { income: 0, expand: 0 },
     );
-    pre[cur].balance = math
+    pre[cur].balance = mathHelper
       .subtract(pre[cur].income, pre[cur].expand)
       .toNumber();
 
     // Calculate the total bill
-    totalYearAmount.income = math
+    totalYearAmount.income = mathHelper
       .add(pre[cur].income, totalYearAmount.income)
       .toNumber();
-    totalYearAmount.expand = math
+    totalYearAmount.expand = mathHelper
       .add(pre[cur].expand, totalYearAmount.expand)
       .toNumber();
-    totalYearAmount.balance = math
+    totalYearAmount.balance = mathHelper
       .add(pre[cur].balance, totalYearAmount.balance)
       .toNumber();
     return pre;

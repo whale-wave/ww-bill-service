@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import xlsl from 'node-xlsx';
 import { Between, FindOneOptions, Like, ObjectLiteral, Repository } from 'typeorm';
-import { math, throwFail } from '../../utils';
+import { mathHelper, throwFail } from '../../utils';
 import { Category } from '../category/entity/category.entity';
 import { User } from '../user/entity/user.entity';
 import {
@@ -122,13 +122,13 @@ export class RecordService {
   getIncome(data: RecordEntity[]) {
     return data
       .filter(i => i.type === MoneyType.INCOME)
-      .reduce((a, b) => math.add(a, Number.parseFloat(b.amount)).toNumber(), 0);
+      .reduce((a, b) => mathHelper.add(a, b.amount).toNumber(), 0);
   }
 
   getExpend(data: RecordEntity[]) {
     return data
       .filter(i => i.type === MoneyType.EXPEND)
-      .reduce((a, b) => math.add(a, Number.parseFloat(b.amount)).toNumber(), 0);
+      .reduce((a, b) => mathHelper.add(a, b.amount).toNumber(), 0);
   }
 
   async getBillRecord(id: number) {
@@ -137,7 +137,7 @@ export class RecordService {
     const { expend, income } = await this.findAllByUserIdAndParams(id, {
       startDate: monthStart,
     });
-    const surplus = math.subtract(income, expend).toNumber();
+    const surplus = mathHelper.subtract(income, expend).toNumber();
     return {
       month,
       expend,
@@ -238,9 +238,9 @@ export class RecordService {
     }, {} as { [year: string]: BillItem });
 
     const all = Object.keys(list).reduce((pre, cur) => {
-      pre.income = math.add(list[cur].income, pre.income).toNumber();
-      pre.expand = math.add(list[cur].expand, pre.expand).toNumber();
-      pre.balance = math.add(list[cur].balance, pre.balance).toNumber();
+      pre.income = mathHelper.add(list[cur].income, pre.income).toNumber();
+      pre.expand = mathHelper.add(list[cur].expand, pre.expand).toNumber();
+      pre.balance = mathHelper.add(list[cur].balance, pre.balance).toNumber();
       return pre;
     }, { income: 0, expand: 0, balance: 0 } as BillItem);
 

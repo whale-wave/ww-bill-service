@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, FindConditions, Repository } from 'typeorm';
 import dayjs from 'dayjs';
-import { math } from '../../utils';
+import { mathHelper } from '../../utils';
 import { AssetEntity, AssetGroupAssetType, AssetGroupEntity, AssetGroupType, AssetRecordEntity, AssetStatisticalRecord, AssetStatisticalRecordType } from '../../entity';
 import { User } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
@@ -101,7 +101,7 @@ export class AssetService {
   async adjustAsset(userId: number, assetId: string, adjustAssetDto: AdjustAssetDto) {
     const asset = await this.assetRepository.findOne({ where: { user: { id: userId }, id: assetId }, relations: ['assetGroup'] });
 
-    const operationAmount = math.subtract(adjustAssetDto.amount || asset.amount, asset.amount).toNumber();
+    const operationAmount = mathHelper.subtract(adjustAssetDto.amount || asset.amount, asset.amount).toNumber();
     if (operationAmount !== 0) {
       const assetRecord = new AssetRecordEntity();
       assetRecord.name = `手动调整${asset.assetGroup.type === AssetGroupType.ADD ? '余额' : '欠款'}`;
@@ -534,9 +534,9 @@ export class AssetService {
       },
     });
 
-    const assetAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.ADD).reduce((acc, cur) => math.add(acc, cur.amount).toString(), '0');
-    const liabilityAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.SUB).reduce((acc, cur) => math.add(acc, cur.amount).toString(), '0');
-    const netAssetAmount = math.subtract(assetAmount, liabilityAmount).toString();
+    const assetAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.ADD).reduce((acc, cur) => mathHelper.add(acc, cur.amount).toString(), '0');
+    const liabilityAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.SUB).reduce((acc, cur) => mathHelper.add(acc, cur.amount).toString(), '0');
+    const netAssetAmount = mathHelper.subtract(assetAmount, liabilityAmount).toString();
 
     const assetRecord = await this.assetStatisticalRecordRepository.findOne({
       where: {
