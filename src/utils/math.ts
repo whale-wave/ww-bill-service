@@ -1,29 +1,23 @@
-import * as math from 'mathjs';
+import math, { MathType } from 'mathjs';
 
 export default {
-  add(num1, num2) {
-    return math.add(math.bignumber(num1), math.bignumber(num2));
+  add<T extends MathType>(num1: T, num2: T) {
+    return math.add(num1, num2);
   },
-  subtract(num1, num2) {
-    return math.subtract(math.bignumber(num1), math.bignumber(num2));
+  subtract<T extends MathType>(num1: T, num2: T) {
+    return math.subtract(num1, num2);
   },
-  multiply(num1, num2) {
-    return math.multiply(
-      math.bignumber(num1),
-      math.bignumber(num2),
-    ) as math.BigNumber;
+  multiply<T extends MathType>(num1: T, num2: T) {
+    return math.multiply(num1, num2);
   },
-  divide(num1, num2) {
-    return math.divide(
-      math.bignumber(num1),
-      math.bignumber(num2),
-    ) as math.BigNumber;
+  divide<T extends MathType>(num1: T, num2: T) {
+    return math.divide(num1, num2);
   },
-  toBigNumber(num) {
+  toBigNumber(num: string | number) {
     return math.bignumber(num);
   },
 };
 
-export const fillZero = (num: number) => {
+export function fillZero(num: number) {
   return num < 10 ? `0${num}` : num;
-};
+}

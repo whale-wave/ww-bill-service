@@ -4,3 +4,4 @@ export * from './asset-group.entity';
 export * from './asset-record.entity';
 export * from './invoice.entity';
 export * from './user-app-config.entity';
+export * from './asset-statistical-record.entity';
