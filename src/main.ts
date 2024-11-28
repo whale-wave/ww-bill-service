@@ -14,6 +14,7 @@ import * as isBetween from 'dayjs/plugin/isBetween';
 import { AppModule } from './app.module';
 import config from './config';
 import { UserService } from './modules/user/user.service';
+import { AssetService } from './modules/asset/asset.service';
 
 dayjs.extend(isBetween);
 
@@ -53,6 +54,8 @@ async function bootstrap() {
 
   const userService = app.get(UserService);
   userService.createSystemAdmin();
+  const assetService = app.get(AssetService);
+  assetService.updateAssetStatisticalRecordAllUser();
 
   await app.listen(3001);
 }

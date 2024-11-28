@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, FindConditions, Repository } from 'typeorm';
 import * as dayjs from 'dayjs';
@@ -10,6 +10,8 @@ import { AdjustAssetDto, CreateAssetDto } from './dto';
 
 @Injectable()
 export class AssetService {
+  readonly logger = new Logger(AssetService.name);
+
   constructor(
     @InjectRepository(AssetEntity)
     private assetRepository: Repository<AssetEntity>,
@@ -107,7 +109,8 @@ export class AssetService {
 
   async deleteAsset(userId: number, assetId: string) {
     await this.assetRecordRepository.delete({ asset: { id: assetId, user: { id: userId } } });
-    return this.assetRepository.delete({ user: { id: userId }, id: assetId });
+    await this.assetRepository.delete({ user: { id: userId }, id: assetId });
+    await this.updateAssetStatisticalRecord({ userId });
   }
 
   async adjustAsset(userId: number, assetId: string, adjustAssetDto: AdjustAssetDto) {
@@ -609,6 +612,14 @@ export class AssetService {
       newNetAssetRecord.type = AssetStatisticalRecordType.NET_ASSET;
       newNetAssetRecord.user = { id: userId } as User;
       await this.assetStatisticalRecordRepository.save(newNetAssetRecord);
+    }
+  }
+
+  async updateAssetStatisticalRecordAllUser() {
+    const users = await this.userService.findAll();
+    for (const user of users) {
+      await this.updateAssetStatisticalRecord({ userId: user.id });
+      this.logger.debug(`更新用户 ${user.username} 的资产统计记录`);
     }
   }
 }

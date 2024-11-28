@@ -3,6 +3,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConnectionOptions } from 'typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserInitMiddleware } from './middleware/UserInitMiddleware';
@@ -22,9 +23,11 @@ import { UserAppConfigModule } from './modules/user-app-config/user-app-config.m
 import { InvoiceModule } from './modules/invoice/invoice.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { AssetModule } from './modules/asset/asset.module';
+import { TaskModule } from './modules/task/task.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: async () =>
         Object.assign(await getConnectionOptions(), {
@@ -50,6 +53,7 @@ import { AssetModule } from './modules/asset/asset.module';
     InvoiceModule,
     BudgetModule,
     AssetModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],
