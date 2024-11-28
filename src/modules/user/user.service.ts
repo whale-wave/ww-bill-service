@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createDefaultCategory } from 'src/utils/createDefaultCategory';
-import { DeepPartial, FindConditions, Repository, UpdateResult } from 'typeorm';
+import { DeepPartial, FindConditions, FindManyOptions, Repository, UpdateResult } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { throwFail } from '../../utils';
 import config from '../../config';
@@ -17,6 +17,10 @@ export class UserService {
     @Inject(forwardRef(() => AssetService))
     private assetService: AssetService,
   ) {}
+
+  findAll(findOptions?: FindManyOptions<User>) {
+    return this.usersRepository.find(findOptions);
+  }
 
   findOne(userId: number) {
     return this.usersRepository.findOne(userId);

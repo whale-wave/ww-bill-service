@@ -15,6 +15,7 @@ import { SystemNotify } from '../../system-notify/entity/system-notify.entity';
 import { Comment } from '../../topic/entty/comment.entity';
 import { Topic, TopicLike } from '../../topic/entty/topic.entity';
 import { AssetEntity, AssetGroupEntity, AssetRecordEntity, BudgetEntity, InvoiceEntity, UserAppConfigEntity } from '../../../entity';
+import { AssetStatisticalRecord } from '../../../entity/asset-statistical-record.entity';
 
 @Entity()
 export class User {
@@ -98,4 +99,7 @@ export class User {
 
   @OneToMany('asset_group', 'user')
   assetGroup: AssetGroupEntity[];
+
+  @OneToMany('asset_statistical_record', 'user')
+  assetStatisticalRecords: AssetStatisticalRecord[];
 }

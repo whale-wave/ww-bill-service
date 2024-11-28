@@ -1,22 +1,18 @@
-import { fillZero } from './../math';
 import * as dayjs from 'dayjs';
 import { Category } from '../../modules/category/entity/category.entity';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
 import { Record } from '../../modules/record/entity/record.entity';
-import math from '../math';
+import { fillZero, mathHelper } from '../math';
 
-export const getRankingByCategory = (
-  recordList: Record[],
-  categoryList: Category[],
-  filterByCategory?: Category,
-) => {
+export function getRankingByCategory(recordList: Record[], categoryList: Category[], filterByCategory?: Category) {
   let rankingList = [] as any[];
 
   if (filterByCategory) {
     rankingList = recordList.filter(
-      (r) => r.category.id === filterByCategory.id,
+      r => r.category.id === filterByCategory.id,
     );
-  } else {
+  }
+  else {
     const categoryMap = new Map();
 
     categoryList.forEach((item) => {
@@ -31,7 +27,7 @@ export const getRankingByCategory = (
       if (!rankingMap.has(categoryId)) {
         const category = categoryMap.get(categoryId);
         rankingMap.set(categoryId, {
-          category: category,
+          category,
           type: category.type,
           percentage: 0,
           amount: 0,
@@ -40,7 +36,7 @@ export const getRankingByCategory = (
 
       const rankingItem = rankingMap.get(categoryId);
 
-      rankingItem.amount = math
+      rankingItem.amount = mathHelper
         .add(rankingItem.amount, record.amount)
         .toNumber();
     });
@@ -52,21 +48,21 @@ export const getRankingByCategory = (
 
   // Calculate the percentage and keep one decimal places.
   const totalAmount = rankingList.reduce(
-    (acc, cur) => math.add(acc, cur.amount).toNumber(),
+    (acc, cur) => mathHelper.add(acc, cur.amount).toNumber(),
     0,
   );
 
   rankingList.forEach((item) => {
-    item.percentage = math
-      .multiply(math.divide(item.amount, totalAmount), 100)
+    item.percentage = mathHelper
+      .multiply(mathHelper.divide(item.amount, totalAmount), 100)
       .toNumber()
       .toFixed(1);
   });
 
   return rankingList;
-};
+}
 
-export const getYearInfo = (_d: Date) => {
+export function getYearInfo(_d: Date) {
   const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
 
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
@@ -88,9 +84,9 @@ export const getYearInfo = (_d: Date) => {
     yearMonthMap,
     yearMonthNoList,
   };
-};
+}
 
-export const getMonthInfo = (_d: Date) => {
+export function getMonthInfo(_d: Date) {
   // 复制日期，避免修改原始日期
   const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
 
@@ -122,9 +118,9 @@ export const getMonthInfo = (_d: Date) => {
     monthDayMap,
     monthDayList,
   };
-};
+}
 
-export const getWeekInfo = (_d: Date) => {
+export function getWeekInfo(_d: Date) {
   // 复制日期，避免修改原始日期
   const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate()));
 
@@ -168,9 +164,9 @@ export const getWeekInfo = (_d: Date) => {
     weekDayNoList,
     weekDayNoDateMap,
   };
-};
+}
 
-export const getRecordMap = (recordList: Record[]) => {
+export function getRecordMap(recordList: Record[]) {
   const recordMap = new Map();
 
   recordList.forEach((record) => {
@@ -198,13 +194,9 @@ export const getRecordMap = (recordList: Record[]) => {
   });
 
   return recordMap;
-};
+}
 
-export const getRecordGroupDataByYear = (
-  recordMap: Map<number, any>,
-  categoryList: Category[],
-  filterByCategory?: Category,
-) => {
+export function getRecordGroupDataByYear(recordMap: Map<number, any>, categoryList: Category[], filterByCategory?: Category) {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
   const result = yearKeys.reduce((res, year) => {
@@ -245,7 +237,7 @@ export const getRecordGroupDataByYear = (
             yearAllRecord.push(dayData);
 
             monthItem.data.push(dayData);
-            monthItem.amount = math
+            monthItem.amount = mathHelper
               .add(monthItem.amount, dayData.amount)
               .toNumber();
           });
@@ -253,7 +245,7 @@ export const getRecordGroupDataByYear = (
 
         monthItem.data.sort((a, b) => Number(b.amount) - Number(a.amount));
 
-        yearItem.amount = math
+        yearItem.amount = mathHelper
           .add(yearItem.amount, monthItem.amount)
           .toNumber();
       }
@@ -267,7 +259,7 @@ export const getRecordGroupDataByYear = (
     );
 
     // month average
-    yearItem.average = math
+    yearItem.average = mathHelper
       .divide(yearItem.amount, yearItem.data.length)
       .toNumber()
       .toFixed(2);
@@ -278,13 +270,9 @@ export const getRecordGroupDataByYear = (
   }, [] as any[]);
 
   return result;
-};
+}
 
-export const getRecordGroupDataByMonth = (
-  recordMap: Map<number, any>,
-  categoryList: Category[],
-  filterCategory?: Category,
-) => {
+export function getRecordGroupDataByMonth(recordMap: Map<number, any>, categoryList: Category[], filterCategory?: Category) {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
   const result = yearKeys.reduce((res, year) => {
@@ -334,14 +322,14 @@ export const getRecordGroupDataByMonth = (
             monthAllRecord.push(dayData);
 
             dayItem.data.push(dayData);
-            dayItem.amount = math
+            dayItem.amount = mathHelper
               .add(dayItem.amount, dayData.amount)
               .toNumber();
           });
 
           dayItem.data.sort((a, b) => Number(b.amount) - Number(a.amount));
 
-          monthItem.amount = math
+          monthItem.amount = mathHelper
             .add(monthItem.amount, dayItem.amount)
             .toNumber();
         }
@@ -355,12 +343,14 @@ export const getRecordGroupDataByMonth = (
       );
 
       yearItem.data.push(monthItem);
-      yearItem.amount = math.add(yearItem.amount, monthItem.amount).toNumber();
+      yearItem.amount = mathHelper
+        .add(yearItem.amount, monthItem.amount)
+        .toNumber();
     });
 
     // month average
     yearItem.data.forEach((monthItem) => {
-      monthItem.average = math
+      monthItem.average = mathHelper
         .divide(monthItem.amount, monthItem.data.length)
         .toNumber()
         .toFixed(2);
@@ -372,13 +362,9 @@ export const getRecordGroupDataByMonth = (
   }, [] as any[]);
 
   return result;
-};
+}
 
-export const getRecordGroupDataByWeek = (
-  recordMap: Map<number, any>,
-  categoryList: Category[],
-  filterByCategory?: Category,
-) => {
+export function getRecordGroupDataByWeek(recordMap: Map<number, any>, categoryList: Category[], filterByCategory?: Category) {
   const yearWeekDayDateMap = new Map();
 
   const yearWeekMap = new Map();
@@ -482,13 +468,15 @@ export const getRecordGroupDataByWeek = (
           ),
           data: dayList,
           amount: dayList.reduce(
-            (acc, cur) => math.add(acc, cur.amount).toNumber(),
+            (acc, cur) => mathHelper.add(acc, cur.amount).toNumber(),
             0,
           ),
         };
 
         weekItem.data.push(dayItem);
-        weekItem.amount = math.add(weekItem.amount, dayItem.amount).toNumber();
+        weekItem.amount = mathHelper
+          .add(weekItem.amount, dayItem.amount)
+          .toNumber();
 
         weekAllRecord.push(...dayList);
       });
@@ -501,13 +489,15 @@ export const getRecordGroupDataByWeek = (
       );
 
       // week average
-      weekItem.average = math
+      weekItem.average = mathHelper
         .divide(weekItem.amount, weekItem.data.length)
         .toNumber()
         .toFixed(2);
 
       yearItem.data.push(weekItem);
-      yearItem.amount = math.add(yearItem.amount, weekItem.amount).toNumber();
+      yearItem.amount = mathHelper
+        .add(yearItem.amount, weekItem.amount)
+        .toNumber();
     });
 
     res.push(yearItem);
@@ -516,19 +506,14 @@ export const getRecordGroupDataByWeek = (
   }, [] as any[]);
 
   return result;
-};
+}
 
-export const getRecordGroupData = (
-  recordList: Record[],
-  category: GetChartDataDtoCategory,
-  categoryList: Category[],
-  filterByCategory?: Category,
-) => {
+export function getRecordGroupData(recordList: Record[], category: GetChartDataDtoCategory, categoryList: Category[], filterByCategory?: Category) {
   let filterRecordList = recordList;
 
   if (filterByCategory) {
     filterRecordList = recordList.filter(
-      (r) => r.category.id === filterByCategory.id,
+      r => r.category.id === filterByCategory.id,
     );
   }
 
@@ -555,4 +540,4 @@ export const getRecordGroupData = (
         filterByCategory,
       );
   }
-};
+}

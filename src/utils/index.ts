@@ -11,7 +11,7 @@ export function removeUndefinedField(obj: any) {
   return obj;
 }
 
-export { default as math } from './math';
+export * from './math';
 export * from './response';
 export * from './upload';
 export * from './validation';

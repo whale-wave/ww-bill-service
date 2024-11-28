@@ -6,7 +6,7 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 import { BudgetEntity, BudgetEntityLevel, BudgetEntityType } from '../../entity/budget.entity';
 import { Category } from '../category/entity/category.entity';
 import { MoneyType, RecordService } from '../record/record.service';
-import { math, throwFail } from '../../utils';
+import { mathHelper, throwFail } from '../../utils';
 import { CategoryService } from '../category/category.service';
 import { GetBudgetInfoDto } from './dto/get-budget-info.dto';
 
@@ -93,7 +93,7 @@ export class BudgetService {
       return false;
     }
 
-    const categorySumAmount = categoryBudgets.reduce((s, b) => math.add(s, b.amount).toNumber(), 0);
+    const categorySumAmount = categoryBudgets.reduce((s, b) => mathHelper.add(s, b.amount).toNumber(), 0);
 
     if (Number(summaryBudget.amount) >= categorySumAmount) {
       return false;
@@ -195,12 +195,12 @@ export class BudgetService {
     data.summaryBudget = {
       id: summaryBudget.id,
       budgetAmount: +summaryBudget.amount,
-      amount: recordList.reduce((total, record) => math.add(total, record.amount).toNumber(), 0),
+      amount: recordList.reduce((total, record) => mathHelper.add(total, record.amount).toNumber(), 0),
       remaining: 0,
       remainingPercentage: '0',
     };
-    data.summaryBudget.remaining = math.subtract(data.summaryBudget.budgetAmount, data.summaryBudget.amount).toNumber();
-    data.summaryBudget.remainingPercentage = (math.divide(data.summaryBudget.remaining, data.summaryBudget.budgetAmount).toNumber() * 100).toFixed();
+    data.summaryBudget.remaining = mathHelper.subtract(data.summaryBudget.budgetAmount, data.summaryBudget.amount).toNumber();
+    data.summaryBudget.remainingPercentage = (mathHelper.divide(data.summaryBudget.remaining, data.summaryBudget.budgetAmount).toNumber() * 100).toFixed();
 
     /* Get category budget */
 
@@ -221,13 +221,13 @@ export class BudgetService {
           id: categoryBudget.id,
           category: categoryBudget.category,
           budgetAmount: +categoryBudget.amount,
-          amount: recordList.filter(record => record.category.id === categoryBudget.category.id).reduce((sum, cur) => math.add(sum, cur.amount).toNumber(), 0),
+          amount: recordList.filter(record => record.category.id === categoryBudget.category.id).reduce((sum, cur) => mathHelper.add(sum, cur.amount).toNumber(), 0),
           remaining: 0,
           remainingPercentage: '0',
         } as BudgetResult;
 
-        _categoryBudget.remaining = math.subtract(_categoryBudget.budgetAmount, _categoryBudget.amount).toNumber();
-        _categoryBudget.remainingPercentage = (math.divide(_categoryBudget.remaining, _categoryBudget.budgetAmount).toNumber() * 100).toFixed();
+        _categoryBudget.remaining = mathHelper.subtract(_categoryBudget.budgetAmount, _categoryBudget.amount).toNumber();
+        _categoryBudget.remainingPercentage = (mathHelper.divide(_categoryBudget.remaining, _categoryBudget.budgetAmount).toNumber() * 100).toFixed();
 
         _categoryBudgets.push(_categoryBudget);
       }

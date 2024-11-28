@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindConditions, Repository } from 'typeorm';
-import { AssetEntity, AssetGroupAssetType, AssetGroupEntity, AssetGroupType, AssetRecordEntity } from 'src/entity';
-import { math } from 'src/utils';
+import { Between, FindConditions, Repository } from 'typeorm';
+import * as dayjs from 'dayjs';
+import { mathHelper } from '../../utils';
+import { AssetEntity, AssetGroupAssetType, AssetGroupEntity, AssetGroupType, AssetRecordEntity, AssetStatisticalRecord, AssetStatisticalRecordType } from '../../entity';
 import { User } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
 import { AdjustAssetDto, CreateAssetDto } from './dto';
 
 @Injectable()
 export class AssetService {
+  readonly logger = new Logger(AssetService.name);
+
   constructor(
     @InjectRepository(AssetEntity)
     private assetRepository: Repository<AssetEntity>,
@@ -16,8 +19,22 @@ export class AssetService {
     private assetGroupRepository: Repository<AssetGroupEntity>,
     @InjectRepository(AssetRecordEntity)
     private assetRecordRepository: Repository<AssetRecordEntity>,
+    @InjectRepository(AssetStatisticalRecord)
+    private assetStatisticalRecordRepository: Repository<AssetStatisticalRecord>,
     private userService: UserService,
   ) {}
+
+  async getAssetStatisticalRecordList(userId: number, findConditions: FindConditions<AssetStatisticalRecord>) {
+    return await this.assetStatisticalRecordRepository.find({
+      where: {
+        user: { id: userId },
+        ...findConditions,
+      },
+      order: {
+        createdAt: 'ASC',
+      },
+    });
+  }
 
   async getAssetGroup(userId: number, assetGroupId: string) {
     const systemUserInfo = await this.userService.getSystemUserInfo();
@@ -60,6 +77,8 @@ export class AssetService {
     assetRecordEntity.asset = asset;
     assetRecordEntity.user = { id: userId } as User;
     await this.assetRecordRepository.save(assetRecordEntity);
+
+    await this.updateAssetStatisticalRecord({ userId });
   }
 
   async findOneAssetRecord(userId: number, assetRecordId: string) {
@@ -90,13 +109,14 @@ export class AssetService {
 
   async deleteAsset(userId: number, assetId: string) {
     await this.assetRecordRepository.delete({ asset: { id: assetId, user: { id: userId } } });
-    return this.assetRepository.delete({ user: { id: userId }, id: assetId });
+    await this.assetRepository.delete({ user: { id: userId }, id: assetId });
+    await this.updateAssetStatisticalRecord({ userId });
   }
 
   async adjustAsset(userId: number, assetId: string, adjustAssetDto: AdjustAssetDto) {
     const asset = await this.assetRepository.findOne({ where: { user: { id: userId }, id: assetId }, relations: ['assetGroup'] });
 
-    const operationAmount = math.subtract(adjustAssetDto.amount || asset.amount, asset.amount).toNumber();
+    const operationAmount = mathHelper.subtract(adjustAssetDto.amount || asset.amount, asset.amount).toNumber();
     if (operationAmount !== 0) {
       const assetRecord = new AssetRecordEntity();
       assetRecord.name = `手动调整${asset.assetGroup.type === AssetGroupType.ADD ? '余额' : '欠款'}`;
@@ -112,6 +132,7 @@ export class AssetService {
     }
 
     await this.assetRepository.update(assetId, adjustAssetDto);
+    await this.updateAssetStatisticalRecord({ userId });
   }
 
   async createDefaultAssetGroup(superAdminId: number) {
@@ -514,6 +535,91 @@ export class AssetService {
           await this.assetGroupRepository.save(assetGroupChild);
         }
       }
+    }
+  }
+
+  async updateAssetStatisticalRecord(params: {
+    userId: number;
+  }) {
+    const { userId } = params;
+
+    const assetList = await this.assetRepository.find({
+      where: {
+        user: { id: userId } as User,
+      },
+      relations: ['assetGroup'],
+    });
+
+    const assetAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.ADD).reduce((acc, cur) => mathHelper.add(acc, cur.amount).toString(), '0');
+    const liabilityAmount = assetList.filter((asset: AssetEntity) => asset.assetGroup.type === AssetGroupType.SUB).reduce((acc, cur) => mathHelper.add(acc, cur.amount).toString(), '0');
+    const netAssetAmount = mathHelper.subtract(assetAmount, liabilityAmount).toString();
+
+    const assetRecord = await this.assetStatisticalRecordRepository.findOne({
+      where: {
+        user: { id: userId } as User,
+        type: AssetStatisticalRecordType.ASSET,
+        createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
+      },
+    });
+
+    if (assetRecord) {
+      assetRecord.amount = assetAmount;
+      await this.assetStatisticalRecordRepository.save(assetRecord);
+    }
+    else {
+      const newAssetRecord = new AssetStatisticalRecord();
+      newAssetRecord.amount = assetAmount;
+      newAssetRecord.type = AssetStatisticalRecordType.ASSET;
+      newAssetRecord.user = { id: userId } as User;
+      await this.assetStatisticalRecordRepository.save(newAssetRecord);
+    }
+
+    const liabilityRecord = await this.assetStatisticalRecordRepository.findOne({
+      where: {
+        user: { id: userId } as User,
+        type: AssetStatisticalRecordType.LIABILITY,
+        createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
+      },
+    });
+
+    if (liabilityRecord) {
+      liabilityRecord.amount = liabilityAmount;
+      await this.assetStatisticalRecordRepository.save(liabilityRecord);
+    }
+    else {
+      const newLiabilityRecord = new AssetStatisticalRecord();
+      newLiabilityRecord.amount = liabilityAmount;
+      newLiabilityRecord.type = AssetStatisticalRecordType.LIABILITY;
+      newLiabilityRecord.user = { id: userId } as User;
+      await this.assetStatisticalRecordRepository.save(newLiabilityRecord);
+    }
+
+    const netAssetRecord = await this.assetStatisticalRecordRepository.findOne({
+      where: {
+        user: { id: userId } as User,
+        type: AssetStatisticalRecordType.NET_ASSET,
+        createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
+      },
+    });
+
+    if (netAssetRecord) {
+      netAssetRecord.amount = netAssetAmount;
+      await this.assetStatisticalRecordRepository.save(netAssetRecord);
+    }
+    else {
+      const newNetAssetRecord = new AssetStatisticalRecord();
+      newNetAssetRecord.amount = netAssetAmount;
+      newNetAssetRecord.type = AssetStatisticalRecordType.NET_ASSET;
+      newNetAssetRecord.user = { id: userId } as User;
+      await this.assetStatisticalRecordRepository.save(newNetAssetRecord);
+    }
+  }
+
+  async updateAssetStatisticalRecordAllUser() {
+    const users = await this.userService.findAll();
+    for (const user of users) {
+      await this.updateAssetStatisticalRecord({ userId: user.id });
+      this.logger.debug(`更新用户 ${user.username} 的资产统计记录`);
     }
   }
 }
