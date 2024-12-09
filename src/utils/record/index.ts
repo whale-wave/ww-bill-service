@@ -1,10 +1,9 @@
 import * as dayjs from 'dayjs';
-import { Category } from '../../modules/category/entity/category.entity';
+import { CategoryEntity, RecordEntity } from '../../entity';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
-import { Record } from '../../modules/record/entity/record.entity';
 import { fillZero, mathHelper } from '../math';
 
-export function getRankingByCategory(recordList: Record[], categoryList: Category[], filterByCategory?: Category) {
+export function getRankingByCategory(recordList: RecordEntity[], categoryList: CategoryEntity[], filterByCategory?: CategoryEntity) {
   let rankingList = [] as any[];
 
   if (filterByCategory) {
@@ -166,7 +165,7 @@ export function getWeekInfo(_d: Date) {
   };
 }
 
-export function getRecordMap(recordList: Record[]) {
+export function getRecordMap(recordList: RecordEntity[]) {
   const recordMap = new Map();
 
   recordList.forEach((record) => {
@@ -196,11 +195,11 @@ export function getRecordMap(recordList: Record[]) {
   return recordMap;
 }
 
-export function getRecordGroupDataByYear(recordMap: Map<number, any>, categoryList: Category[], filterByCategory?: Category) {
+export function getRecordGroupDataByYear(recordMap: Map<number, any>, categoryList: CategoryEntity[], filterByCategory?: CategoryEntity) {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
   const result = yearKeys.reduce((res, year) => {
-    const yearAllRecord = [] as Record[];
+    const yearAllRecord = [] as RecordEntity[];
 
     const yearItem = {
       type: 'year',
@@ -272,7 +271,7 @@ export function getRecordGroupDataByYear(recordMap: Map<number, any>, categoryLi
   return result;
 }
 
-export function getRecordGroupDataByMonth(recordMap: Map<number, any>, categoryList: Category[], filterCategory?: Category) {
+export function getRecordGroupDataByMonth(recordMap: Map<number, any>, categoryList: CategoryEntity[], filterCategory?: CategoryEntity) {
   const yearKeys = Array.from(recordMap.keys());
   yearKeys.sort((a, b) => a - b);
   const result = yearKeys.reduce((res, year) => {
@@ -289,7 +288,7 @@ export function getRecordGroupDataByMonth(recordMap: Map<number, any>, categoryL
     monthKeys.sort((a, b) => a - b);
 
     monthKeys.forEach((month) => {
-      const monthAllRecord = [] as Record[];
+      const monthAllRecord = [] as RecordEntity[];
 
       const monthData = yearData.get(month);
 
@@ -364,7 +363,7 @@ export function getRecordGroupDataByMonth(recordMap: Map<number, any>, categoryL
   return result;
 }
 
-export function getRecordGroupDataByWeek(recordMap: Map<number, any>, categoryList: Category[], filterByCategory?: Category) {
+export function getRecordGroupDataByWeek(recordMap: Map<number, any>, categoryList: CategoryEntity[], filterByCategory?: CategoryEntity) {
   const yearWeekDayDateMap = new Map();
 
   const yearWeekMap = new Map();
@@ -451,7 +450,7 @@ export function getRecordGroupDataByWeek(recordMap: Map<number, any>, categoryLi
         ranking: [] as any[],
       };
 
-      const weekAllRecord = [] as Record[];
+      const weekAllRecord = [] as RecordEntity[];
 
       const dayMap = weekDayMap.get(week);
       const dayKeys = Array.from(dayMap.keys()) as number[];
@@ -508,7 +507,7 @@ export function getRecordGroupDataByWeek(recordMap: Map<number, any>, categoryLi
   return result;
 }
 
-export function getRecordGroupData(recordList: Record[], category: GetChartDataDtoCategory, categoryList: Category[], filterByCategory?: Category) {
+export function getRecordGroupData(recordList: RecordEntity[], category: GetChartDataDtoCategory, categoryList: CategoryEntity[], filterByCategory?: CategoryEntity) {
   let filterRecordList = recordList;
 
   if (filterByCategory) {

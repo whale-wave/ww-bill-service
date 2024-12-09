@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { throwFail } from '../../utils';
 import { UserService } from '../user/user.service';
+import { SystemNotifyEntity } from '../../entity/system-notify.entity';
 import { CreateSystemNotifyDto } from './dto/system-notify.dto';
-import { SystemNotify } from './entity/system-notify.entity';
 
 @Injectable()
 export class SystemNotifyService {
   constructor(
-    @InjectRepository(SystemNotify)
-    private readonly systemNotifyRepository: Repository<SystemNotify>,
+    @InjectRepository(SystemNotifyEntity)
+    private readonly systemNotifyRepository: Repository<SystemNotifyEntity>,
     private readonly userService: UserService,
   ) {}
 
@@ -20,7 +20,7 @@ export class SystemNotifyService {
       isGlobal = true,
       coverPicture = '',
     } = createSystemNotifyDto;
-    const systemNotify = new SystemNotify();
+    const systemNotify = new SystemNotifyEntity();
     const user = await this.userService.findOne(+userId);
     if (!user) {
       throwFail('用户不存在');

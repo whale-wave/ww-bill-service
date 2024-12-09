@@ -1,4 +1,4 @@
-import { User } from 'src/modules/user/entity/user.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseColumn } from './utils';
 import { AssetEntity } from './asset.entity';
@@ -88,6 +88,6 @@ export class AssetGroupEntity extends BaseColumn {
   @OneToMany('asset', 'assetGroup')
   asset: AssetEntity[];
 
-  @ManyToOne('User', 'id')
-  user: User;
+  @ManyToOne('user', 'id')
+  user: UserEntity;
 }

@@ -1,16 +1,16 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { throwFail } from '../../utils';
 import { TopicService } from '../topic/topic.service';
 import { UserService } from '../user/user.service';
-import { Follow } from './entities/follow.entity';
+import { FollowEntity } from '../../entity/follow.entity';
 
 @Injectable()
 export class FollowService {
   constructor(
-    @InjectRepository(Follow)
-    private readonly followRepository: Repository<Follow>,
+    @InjectRepository(FollowEntity)
+    private readonly followRepository: Repository<FollowEntity>,
     private readonly userService: UserService,
     @Inject(forwardRef(() => TopicService))
     private readonly topicService: TopicService,
@@ -38,7 +38,7 @@ export class FollowService {
   }
 
   async create(userId: number, followId: number) {
-    const follow = new Follow();
+    const follow = new FollowEntity();
     const user = await this.userService.findOne(userId);
     if (!user) {
       throwFail('无此用户');

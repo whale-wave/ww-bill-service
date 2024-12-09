@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { User } from '../modules/user/entity/user.entity';
+import { UserEntity } from './user.entity';
 import { BaseColumn } from './utils';
 import { AssetGroupEntity } from './asset-group.entity';
 import { AssetRecordEntity } from './asset-record.entity';
@@ -42,6 +42,6 @@ export class AssetEntity extends BaseColumn {
   @ManyToOne('asset_group', 'id')
   assetGroup: AssetGroupEntity;
 
-  @ManyToOne('User', 'id')
-  user: User;
+  @ManyToOne('user', 'id')
+  user: UserEntity;
 }

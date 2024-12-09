@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
-import { Category } from '../../modules/category/entity/category.entity';
+import { CategoryEntity } from '../../entity/category.entity';
 import { CategoryRecord } from '../createDefaultCategory';
 
 export function createCategory(
-  rep: Repository<Category>,
+  rep: Repository<CategoryEntity>,
   categoryArr: CategoryRecord[],
 ) {
   return rep

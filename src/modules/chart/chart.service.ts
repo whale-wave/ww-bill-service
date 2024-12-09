@@ -1,22 +1,21 @@
-import { success } from '../../utils';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { getRecordGroupData } from 'src/utils/record';
+import { success } from '../../utils';
+import { CategoryEntity, RecordEntity } from '../../entity';
 import {
   GetChartDataDto,
   GetChartDataDtoCategory,
 } from './dto/get-chart-data.dto';
-import { Record } from '../record/entity/record.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { getRecordGroupData } from 'src/utils/record';
-import { Category } from '../category/entity/category.entity';
 
 @Injectable()
 export class ChartService {
   constructor(
-    @InjectRepository(Record)
-    private recordRepository: Repository<Record>,
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    @InjectRepository(RecordEntity)
+    private recordRepository: Repository<RecordEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {}
 
   async getChartCategoryItemList(
@@ -86,10 +85,10 @@ export class ChartService {
       },
     });
 
-    let filterByCategory = undefined;
+    let filterByCategory;
     if (categoryId) {
       filterByCategory = categoryList.find(
-        (item) => item.id === Number(categoryId),
+        item => item.id === Number(categoryId),
       );
     }
 

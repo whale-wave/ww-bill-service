@@ -4,16 +4,16 @@ import * as dayjs from 'dayjs';
 import { Between, Repository } from 'typeorm';
 import { getStartAndEndTime } from '../../utils/time';
 import { RecordService } from '../record/record.service';
-import { User } from '../user/entity/user.entity';
-import { CheckIn } from './entities/check-in.entity';
+import { UserEntity } from '../../entity/user.entity';
+import { CheckInEntity } from '../../entity/check-in.entity';
 
 @Injectable()
 export class CheckInService {
   constructor(
-    @InjectRepository(CheckIn)
-    private checkInRepository: Repository<CheckIn>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(CheckInEntity)
+    private checkInRepository: Repository<CheckInEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     private recordService: RecordService,
   ) {}
 
@@ -22,7 +22,7 @@ export class CheckInService {
     if (hasCheckIn) {
       throw new HttpException('已经签到过了', HttpStatus.CREATED);
     }
-    const checkIn = new CheckIn();
+    const checkIn = new CheckInEntity();
     checkIn.user = await this.userRepository.findOne(userId);
     checkIn.checkInTime = dayjs().format();
     return this.checkInRepository.save(checkIn);

@@ -7,12 +7,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Record } from '../../record/entity/record.entity';
-import { User } from '../../user/entity/user.entity';
-import { BudgetEntity } from '../../../entity/budget.entity';
+import { RecordEntity } from './record.entity';
+import { UserEntity } from './user.entity';
+import { BudgetEntity } from './budget.entity';
 
-@Entity()
-export class Category {
+@Entity('category')
+export class CategoryEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,11 +31,11 @@ export class Category {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne('User', 'category')
-  user: User;
+  @ManyToOne('user', 'category')
+  user: UserEntity;
 
-  @OneToMany('Record', 'category')
-  records: Record[];
+  @OneToMany('record', 'category')
+  records: RecordEntity[];
 
   @OneToMany('budget', 'category')
   budget: BudgetEntity[];

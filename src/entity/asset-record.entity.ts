@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { User } from '../modules/user/entity/user.entity';
+import { UserEntity } from './user.entity';
 import { BaseColumn } from './utils';
 import { AssetEntity } from './asset.entity';
 
@@ -50,6 +50,6 @@ export class AssetRecordEntity extends BaseColumn {
   @ManyToOne('asset', 'id')
   asset: AssetEntity;
 
-  @ManyToOne('User', 'id')
-  user: User;
+  @ManyToOne('user', 'id')
+  user: UserEntity;
 }

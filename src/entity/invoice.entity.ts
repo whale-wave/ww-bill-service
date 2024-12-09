@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../modules/user/entity/user.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('invoice')
 export class InvoiceEntity {
@@ -48,6 +48,6 @@ export class InvoiceEntity {
   })
   bankAccount?: string;
 
-  @ManyToOne('User', 'id')
-  user: User;
+  @ManyToOne('user', 'id')
+  user: UserEntity;
 }

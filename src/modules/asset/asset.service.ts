@@ -4,7 +4,7 @@ import { Between, FindConditions, Repository } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { mathHelper } from '../../utils';
 import { AssetEntity, AssetGroupAssetType, AssetGroupEntity, AssetGroupType, AssetRecordEntity, AssetStatisticalRecord, AssetStatisticalRecordType } from '../../entity';
-import { User } from '../user/entity/user.entity';
+import { UserEntity } from '../../entity/user.entity';
 import { UserService } from '../user/user.service';
 import { AdjustAssetDto, CreateAssetDto } from './dto';
 
@@ -64,7 +64,7 @@ export class AssetService {
     assetEntity.amount = createAssetDto.amount;
     assetEntity.assetGroup = { id: createAssetDto.groupId } as AssetGroupEntity;
     assetEntity.cardId = createAssetDto.cardId;
-    assetEntity.user = { id: userId } as User;
+    assetEntity.user = { id: userId } as UserEntity;
     const asset = await this.assetRepository.save(assetEntity);
 
     const assetRecordEntity = new AssetRecordEntity();
@@ -75,7 +75,7 @@ export class AssetService {
     assetRecordEntity.afterAmount = createAssetDto.amount;
     assetRecordEntity.comment = `从 ${assetRecordEntity.beforeAmount} 调整为 ${assetRecordEntity.afterAmount}`;
     assetRecordEntity.asset = asset;
-    assetRecordEntity.user = { id: userId } as User;
+    assetRecordEntity.user = { id: userId } as UserEntity;
     await this.assetRecordRepository.save(assetRecordEntity);
 
     await this.updateAssetStatisticalRecord({ userId });
@@ -125,7 +125,7 @@ export class AssetService {
       assetRecord.beforeAmount = asset.amount;
       assetRecord.afterAmount = adjustAssetDto.amount;
       assetRecord.comment = `从 ${assetRecord.beforeAmount} 调整为 ${assetRecord.afterAmount}`;
-      assetRecord.user = { id: userId } as User;
+      assetRecord.user = { id: userId } as UserEntity;
       assetRecord.asset = asset;
 
       await this.assetRecordRepository.save(assetRecord);
@@ -523,14 +523,14 @@ export class AssetService {
     for (const assetGroupItem of defaultAssetGroup) {
       const assetGroupEntity = new AssetGroupEntity();
       Object.assign(assetGroupEntity, assetGroupItem);
-      assetGroupEntity.user = { id: superAdminId } as User;
+      assetGroupEntity.user = { id: superAdminId } as UserEntity;
       const assetGroup = await this.assetGroupRepository.save(assetGroupEntity);
 
       if (assetGroupItem.children) {
         for (const child of assetGroupItem.children) {
           const assetGroupChild = new AssetGroupEntity();
           Object.assign(assetGroupChild, child);
-          assetGroupChild.user = { id: superAdminId } as User;
+          assetGroupChild.user = { id: superAdminId } as UserEntity;
           assetGroupChild.parentId = assetGroup.id;
           await this.assetGroupRepository.save(assetGroupChild);
         }
@@ -545,7 +545,7 @@ export class AssetService {
 
     const assetList = await this.assetRepository.find({
       where: {
-        user: { id: userId } as User,
+        user: { id: userId } as UserEntity,
       },
       relations: ['assetGroup'],
     });
@@ -556,7 +556,7 @@ export class AssetService {
 
     const assetRecord = await this.assetStatisticalRecordRepository.findOne({
       where: {
-        user: { id: userId } as User,
+        user: { id: userId } as UserEntity,
         type: AssetStatisticalRecordType.ASSET,
         createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
       },
@@ -570,13 +570,13 @@ export class AssetService {
       const newAssetRecord = new AssetStatisticalRecord();
       newAssetRecord.amount = assetAmount;
       newAssetRecord.type = AssetStatisticalRecordType.ASSET;
-      newAssetRecord.user = { id: userId } as User;
+      newAssetRecord.user = { id: userId } as UserEntity;
       await this.assetStatisticalRecordRepository.save(newAssetRecord);
     }
 
     const liabilityRecord = await this.assetStatisticalRecordRepository.findOne({
       where: {
-        user: { id: userId } as User,
+        user: { id: userId } as UserEntity,
         type: AssetStatisticalRecordType.LIABILITY,
         createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
       },
@@ -590,13 +590,13 @@ export class AssetService {
       const newLiabilityRecord = new AssetStatisticalRecord();
       newLiabilityRecord.amount = liabilityAmount;
       newLiabilityRecord.type = AssetStatisticalRecordType.LIABILITY;
-      newLiabilityRecord.user = { id: userId } as User;
+      newLiabilityRecord.user = { id: userId } as UserEntity;
       await this.assetStatisticalRecordRepository.save(newLiabilityRecord);
     }
 
     const netAssetRecord = await this.assetStatisticalRecordRepository.findOne({
       where: {
-        user: { id: userId } as User,
+        user: { id: userId } as UserEntity,
         type: AssetStatisticalRecordType.NET_ASSET,
         createdAt: Between(dayjs().startOf('day').toDate(), dayjs().endOf('day').toDate()),
       },
@@ -610,7 +610,7 @@ export class AssetService {
       const newNetAssetRecord = new AssetStatisticalRecord();
       newNetAssetRecord.amount = netAssetAmount;
       newNetAssetRecord.type = AssetStatisticalRecordType.NET_ASSET;
-      newNetAssetRecord.user = { id: userId } as User;
+      newNetAssetRecord.user = { id: userId } as UserEntity;
       await this.assetStatisticalRecordRepository.save(newNetAssetRecord);
     }
   }

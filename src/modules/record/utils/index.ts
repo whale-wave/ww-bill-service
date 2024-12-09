@@ -1,9 +1,9 @@
 import * as dayjs from 'dayjs';
 import { mathHelper } from '../../../utils';
 import { RecordType } from '../../../types';
-import { Record } from '../entity/record.entity';
+import { RecordEntity } from '../../../entity';
 
-export function calcRecordListAmount(recordList: Record[]) {
+export function calcRecordListAmount(recordList: RecordEntity[]) {
   const { income, expand } = recordList.reduce(
     (res, i) => {
       if (i.type === RecordType.EXPEND) {

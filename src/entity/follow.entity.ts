@@ -5,15 +5,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../user/entity/user.entity';
+import { UserEntity } from './user.entity';
 
-@Entity()
-export class Follow {
+@Entity('follow')
+export class FollowEntity {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne('User', 'id')
-  follow: User;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -21,6 +18,9 @@ export class Follow {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne('User', 'follows')
-  user: User;
+  @ManyToOne('user', 'id')
+  follow: UserEntity;
+
+  @ManyToOne('user', 'follows')
+  user: UserEntity;
 }

@@ -6,19 +6,19 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 import { throwFail } from '../../utils';
 import config from '../../config';
 import { AssetService } from '../asset/asset.service';
+import { UserEntity } from '../../entity/user.entity';
 import { UpdatePasswordDto, UpdateUserInfoDto } from './dto/user.dto';
-import { User } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
     @Inject(forwardRef(() => AssetService))
     private assetService: AssetService,
   ) {}
 
-  findAll(findOptions?: FindManyOptions<User>) {
+  findAll(findOptions?: FindManyOptions<UserEntity>) {
     return this.usersRepository.find(findOptions);
   }
 
@@ -40,7 +40,7 @@ export class UserService {
     });
   }
 
-  create(user: DeepPartial<User>): Promise<User> {
+  create(user: DeepPartial<UserEntity>): Promise<UserEntity> {
     return this.usersRepository.save(user);
   }
 
@@ -83,7 +83,7 @@ export class UserService {
     return this.usersRepository.update({ email }, { password });
   }
 
-  async update(filter: FindConditions<User>, data: QueryDeepPartialEntity<User>): Promise<UpdateResult> {
+  async update(filter: FindConditions<UserEntity>, data: QueryDeepPartialEntity<UserEntity>): Promise<UpdateResult> {
     return this.usersRepository.update(filter, data);
   }
 

@@ -5,8 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import xlsl from 'node-xlsx';
 import { Between, FindOneOptions, Like, ObjectLiteral, Repository } from 'typeorm';
 import { mathHelper, throwFail } from '../../utils';
-import { Category } from '../category/entity/category.entity';
-import { User } from '../user/entity/user.entity';
+import { CategoryEntity } from '../../entity/category.entity';
+import { UserEntity } from '../../entity/user.entity';
+import { RecordEntity } from '../../entity';
 import {
   CreateRecordDto,
   GetRecordListDto,
@@ -14,7 +15,6 @@ import {
 } from './dto/record.dto';
 import { BillItem, calcEachMonthAmount, calcRecordListAmount } from './utils';
 import { GetRecordBillDtoType } from './dto/GetRecordBillDto';
-import { Record as RecordEntity } from './entity/record.entity';
 
 const typeMap = {
   支出: 'sub',
@@ -31,10 +31,10 @@ export class RecordService {
   constructor(
     @InjectRepository(RecordEntity)
     private recordRepository: Repository<RecordEntity>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {}
 
   findAll(options: FindOneOptions<RecordEntity>) {

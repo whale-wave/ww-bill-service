@@ -1,6 +1,6 @@
 import { createConnection } from "typeorm";
 import * as dotenv from "dotenv";
-import { User } from "../src/modules/user/entity/user.entity";
+import { UserEntity } from "../src/entity/user.entity";
 import { UserAppConfigEntity } from "../src/entity";
 
 dotenv.config();
@@ -19,7 +19,7 @@ const ormConfig = require("../ormconfig.js")[0];
     entities: ["src/**/*.entity.ts"]
   });
 
-  const userRepository = connection.getRepository(User);
+  const userRepository = connection.getRepository(UserEntity);
   const userAppConfigRepository = connection.getRepository(UserAppConfigEntity);
   const users = await userRepository.find();
 

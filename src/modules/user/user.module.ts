@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CheckInModule } from '../check-in/check-in.module';
 import { RecordModule } from '../record/record.module';
 import { AssetModule } from '../asset/asset.module';
+import { UserEntity } from '../../entity';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { User } from './entity/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), CheckInModule, RecordModule, forwardRef(() => AssetModule)],
+  imports: [TypeOrmModule.forFeature([UserEntity]), CheckInModule, RecordModule, forwardRef(() => AssetModule)],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService],

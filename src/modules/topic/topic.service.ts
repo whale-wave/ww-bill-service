@@ -1,31 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, IsNull, Repository, Not } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { tinyInt } from '../../utils';
-import { User } from '../user/entity/user.entity';
+import { UserEntity } from '../../entity/user.entity';
+import { CommentEntity } from '../../entity/comment.entity';
+import { TopicEntity, TopicLikeEntity } from '../../entity/topic.entity';
 import { GetTopicListQueryDto } from './dto/get-topic-list-query.dto';
 import { CreateCommentDto, CreateTopicDto } from './dto/topic.dto';
-import { Comment } from './entty/comment.entity';
-import { Topic, TopicLike } from './entty/topic.entity';
 
 @Injectable()
 export class TopicService {
   constructor(
-    @InjectRepository(Topic)
-    private readonly topicRepository: Repository<Topic>,
-    @InjectRepository(TopicLike)
-    private readonly topicLikeRepository: Repository<TopicLike>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(TopicEntity)
+    private readonly topicRepository: Repository<TopicEntity>,
+    @InjectRepository(TopicLikeEntity)
+    private readonly topicLikeRepository: Repository<TopicLikeEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(CommentEntity)
+    private readonly commentRepository: Repository<CommentEntity>,
   ) {}
 
   async create(userId: number, createTopicDto: CreateTopicDto) {
     const { content, images } = createTopicDto;
-    if (!content) return fail('内容不能为空');
+    if (!content)
+      return fail('内容不能为空');
     const user = await this.userRepository.findOne(userId);
-    const topic = new Topic();
+    const topic = new TopicEntity();
     topic.user = user;
     topic.content = content;
     topic.images = images;
@@ -116,12 +117,13 @@ export class TopicService {
       where: { user, topic },
     });
     if (!vote) {
-      const topicLike = new TopicLike();
+      const topicLike = new TopicLikeEntity();
       topicLike.user = user;
       topicLike.isLike = true;
       topicLike.topic = topic;
       await this.topicLikeRepository.save(topicLike);
-    } else {
+    }
+    else {
       await this.topicLikeRepository.update(vote.id, {
         isLike: !vote.isLike,
       });
@@ -163,7 +165,7 @@ export class TopicService {
     addComment: CreateCommentDto,
   ) {
     const { content, replyTo } = addComment;
-    const comment = new Comment();
+    const comment = new CommentEntity();
     comment.user = await this.userRepository.findOne(userId);
     comment.topic = await this.topicRepository.findOne(topicId);
     comment.content = content;
@@ -180,7 +182,7 @@ export class TopicService {
       where: { user: userId },
     });
     // map to array
-    const topicIdsArr = topicIds.map((item) => item.id);
+    const topicIdsArr = topicIds.map(item => item.id);
     // find all comment
     const data = await this.commentRepository
       .createQueryBuilder('comment')

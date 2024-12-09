@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { User } from '../modules/user/entity/user.entity';
-import { Category } from '../modules/category/entity/category.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { UserEntity } from './user.entity';
+import { CategoryEntity } from './category.entity';
+import { BaseColumn } from './utils';
 
 export enum BudgetEntityType {
   MONTH = 0,
@@ -13,10 +14,7 @@ export enum BudgetEntityLevel {
 }
 
 @Entity('budget')
-export class BudgetEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class BudgetEntity extends BaseColumn {
   @Column({
     type: 'varchar',
     comment: '预算金额',
@@ -38,23 +36,9 @@ export class BudgetEntity {
   })
   type: BudgetEntityType;
 
-  @CreateDateColumn({
-    type: 'timestamptz',
-    comment: '创建时间',
-    nullable: true,
-  })
-  createdAt: Date;
+  @ManyToOne('user', 'id')
+  user: UserEntity;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-    comment: '更新时间',
-    nullable: true,
-  })
-  updatedAt: Date;
-
-  @ManyToOne('User', 'id')
-  user: User;
-
-  @ManyToOne('Category', 'id', { nullable: true })
-  category: Category;
+  @ManyToOne('category', 'id', { nullable: true })
+  category: CategoryEntity;
 }

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { User } from '../modules/user/entity/user.entity';
+import { UserEntity } from './user.entity';
 import { BaseColumn } from './utils';
 
 // 资产 负债 净资产
@@ -25,6 +25,6 @@ export class AssetStatisticalRecord extends BaseColumn {
   })
   amount: string;
 
-  @ManyToOne('User', 'assetStatisticalRecords')
-  user: User;
+  @ManyToOne('user', 'assetStatisticalRecords')
+  user: UserEntity;
 }

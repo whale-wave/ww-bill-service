@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../user/entity/user.entity';
+import { UserEntity } from './user.entity';
 
-@Entity()
-export class SystemNotify {
+@Entity('system_notify')
+export class SystemNotifyEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,12 +22,12 @@ export class SystemNotify {
   @Column({ type: 'varchar', default: '' })
   coverPicture?: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  @ManyToOne('User', 'systemNotifies')
-  user: User;
+  @ManyToOne('user', 'systemNotifies')
+  user: UserEntity;
 }

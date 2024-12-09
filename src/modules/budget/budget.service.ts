@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { BudgetEntity, BudgetEntityLevel, BudgetEntityType } from '../../entity/budget.entity';
-import { Category } from '../category/entity/category.entity';
+import { CategoryEntity } from '../../entity/category.entity';
 import { MoneyType, RecordService } from '../record/record.service';
 import { mathHelper, throwFail } from '../../utils';
 import { CategoryService } from '../category/category.service';
@@ -12,7 +12,7 @@ import { GetBudgetInfoDto } from './dto/get-budget-info.dto';
 
 export interface BudgetResult {
   id: string;
-  category?: Category;
+  category?: CategoryEntity;
   budgetAmount: number;
   amount: number;
   remaining: number;

@@ -3,20 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
 import { createDefaultCategoryExpend, createDefaultCategoryIncome, fail, getFileHash, qiniuOss } from '../../utils';
 import { createCategory } from '../../utils/compatible/category';
-import { User } from '../user/entity/user.entity';
+import { UserEntity } from '../../entity/user.entity';
+import { CategoryEntity } from '../../entity/category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
-import { Category } from './entity/category.entity';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
-  async findOne(options: FindOneOptions<Category>) {
+  async findOne(options: FindOneOptions<CategoryEntity>) {
     return this.categoryRepository.find(options);
   }
 
@@ -39,7 +39,7 @@ export class CategoryService {
       `/user_${user.username}/`,
     );
 
-    const category = new Category();
+    const category = new CategoryEntity();
     category.user = user;
     category.name = name;
     category.icon = url;

@@ -1,7 +1,7 @@
-import { Category } from './../../modules/category/entity/category.entity';
+import { CategoryEntity } from '../../entity/category.entity';
 import { Record } from '../../modules/record/entity/record.entity';
-import { getMonthInfo, getRecordGroupData, getYearInfo } from './index';
 import { GetChartDataDtoCategory } from '../../modules/chart/dto/get-chart-data.dto';
+import { getMonthInfo, getRecordGroupData, getYearInfo } from './index';
 
 const categoryList = [
   {
@@ -14,7 +14,7 @@ const categoryList = [
     type: 'sub',
     name: '运动',
   },
-] as unknown as Category[];
+] as unknown as CategoryEntity[];
 
 const categoryMap = {
   1: categoryList[0],
@@ -76,7 +76,8 @@ describe('record', () => {
             if (monthNo === 4) {
               month.amount = 140;
               month.data = [recordList[2]];
-            } else if (monthNo === 6) {
+            }
+            else if (monthNo === 6) {
               month.amount = 10;
               month.data = [recordList[3]];
             }
@@ -269,7 +270,8 @@ describe('record', () => {
                 if (dayNo === 1) {
                   day.amount = 1100;
                   day.data = [recordList[0]];
-                } else if (dayNo === 4) {
+                }
+                else if (dayNo === 4) {
                   day.amount = 1200;
                   day.data = [recordList[1]];
                 }
@@ -339,7 +341,7 @@ describe('record', () => {
             amount: 40,
             average: '5.71',
             data: [
-              ...[2, 3].map((i) => ({
+              ...[2, 3].map(i => ({
                 type: 'day',
                 value: `2023-01-0${i}`,
                 amount: 0,
@@ -351,7 +353,7 @@ describe('record', () => {
                 amount: 40,
                 data: [recordList[0]],
               },
-              ...[5, 6, 7, 8].map((i) => ({
+              ...[5, 6, 7, 8].map(i => ({
                 type: 'day',
                 value: `2023-01-0${i}`,
                 amount: 0,
@@ -373,7 +375,7 @@ describe('record', () => {
             amount: 60,
             average: '8.57',
             data: [
-              ...[9].map((i) => ({
+              ...[9].map(i => ({
                 type: 'day',
                 value: `2023-01-0${i}`,
                 amount: 0,
@@ -385,7 +387,7 @@ describe('record', () => {
                 amount: 60,
                 data: [recordList[1]],
               },
-              ...[11, 12, 13, 14, 15].map((i) => ({
+              ...[11, 12, 13, 14, 15].map(i => ({
                 type: 'day',
                 value: `2023-01-${i}`,
                 amount: 0,
@@ -414,7 +416,7 @@ describe('record', () => {
             amount: 100,
             average: '14.29',
             data: [
-              ...['01', '02', '03', '04'].map((i) => ({
+              ...['01', '02', '03', '04'].map(i => ({
                 type: 'day',
                 value: `2024-01-${i}`,
                 amount: 0,
@@ -426,7 +428,7 @@ describe('record', () => {
                 amount: 100,
                 data: [recordList[2], recordList[3]],
               },
-              ...['06', '07'].map((i) => ({
+              ...['06', '07'].map(i => ({
                 type: 'day',
                 value: `2024-01-${i}`,
                 amount: 0,

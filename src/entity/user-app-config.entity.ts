@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../modules/user/entity/user.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('user_app_config')
 export class UserAppConfigEntity {
@@ -15,7 +15,7 @@ export class UserAppConfigEntity {
   @Column({ type: 'boolean', default: false })
   isOpenSoundEffect?: boolean;
 
-  @OneToOne(() => User, 'userAppConfig')
+  @OneToOne(() => UserEntity, 'userAppConfig')
   @JoinColumn()
-  user: User;
+  user: UserEntity;
 }
