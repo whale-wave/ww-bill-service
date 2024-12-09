@@ -19,6 +19,9 @@ export class SystemNotifyEntity {
   @Column({ type: 'boolean', default: true })
   isGlobal?: boolean;
 
+  // @Column({ type: 'boolean', default: false })
+  // isShow?: boolean;
+
   @Column({ type: 'varchar', default: '' })
   coverPicture?: string;
 
