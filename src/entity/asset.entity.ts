@@ -36,12 +36,12 @@ export class AssetEntity extends BaseColumn {
   })
   cardId?: string;
 
-  @OneToMany('asset_record', 'asset')
-  assetRecord: AssetRecordEntity[];
-
   @ManyToOne('asset_group', 'id')
   assetGroup: AssetGroupEntity;
 
   @ManyToOne('user', 'id')
   user: UserEntity;
+
+  @OneToMany('asset_record', 'asset')
+  assetRecord: AssetRecordEntity[];
 }

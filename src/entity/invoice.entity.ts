@@ -1,11 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { BaseColumn } from './utils';
 
 @Entity('invoice')
-export class InvoiceEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class InvoiceEntity extends BaseColumn {
   @Column({
     type: 'varchar',
     nullable: false,

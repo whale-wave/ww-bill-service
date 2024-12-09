@@ -1,11 +1,9 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { BaseColumn } from './utils';
 
 @Entity('user_app_config')
-export class UserAppConfigEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class UserAppConfigEntity extends BaseColumn {
   @Column({ type: 'boolean', default: false })
   isDisplayAmount?: boolean;
 

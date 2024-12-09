@@ -85,9 +85,9 @@ export class AssetGroupEntity extends BaseColumn {
   })
   parentId: string;
 
-  @OneToMany('asset', 'assetGroup')
-  asset: AssetEntity[];
-
   @ManyToOne('user', 'id')
   user: UserEntity;
+
+  @OneToMany('asset', 'assetGroup')
+  asset: AssetEntity[];
 }
