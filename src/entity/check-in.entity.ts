@@ -13,7 +13,7 @@ export class CheckInEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('timestamptz')
+  @Column({ type: 'timestamptz', nullable: true })
   checkInTime: string;
 
   @CreateDateColumn({ type: 'timestamptz' })

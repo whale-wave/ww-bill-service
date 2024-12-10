@@ -17,7 +17,7 @@ export class RecordEntity {
   @Column()
   remark: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', nullable: true })
   time: string;
 
   @Column({ nullable: false, enum: ['sub', 'add'] })
