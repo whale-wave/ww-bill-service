@@ -39,6 +39,7 @@ json swagger: [http://localhost:3001/doc-json](http://localhost:3001/doc-json)
 - [nest-swagger](https://docs.nestjs.com/openapi/types-and-parameters#enums-schema)
 - [nest-swagger-plugin](https://docs.nestjs.com/openapi/cli-pluginv)
 - [typeorm-v2.x](https://typeorm-legacy.productsway.com/connection-api/)
+- [drawDb](https://www.drawdb.app)
 
 ## Database Structure
 
