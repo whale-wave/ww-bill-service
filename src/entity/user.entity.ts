@@ -7,15 +7,24 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CategoryEntity } from './category.entity';
-import { SystemNotifyEntity } from './system-notify.entity';
-import { RecordEntity } from './record.entity';
-import { CommentEntity } from './comment.entity';
-import { TopicEntity, TopicLikeEntity } from './topic.entity';
-import { FollowEntity } from './follow.entity';
-import { CheckInEntity } from './check-in.entity';
-import { AssetStatisticalRecord } from './asset-statistical-record.entity';
-import { AssetEntity, AssetGroupEntity, AssetRecordEntity, BudgetEntity, InvoiceEntity, UserAppConfigEntity } from '.';
+import {
+  AssetEntity,
+  AssetGroupEntity,
+  AssetRecordEntity,
+  AssetStatisticalRecord,
+  BudgetEntity,
+  CategoryEntity,
+  CheckInEntity,
+  CommentEntity,
+  FollowEntity,
+  InvoiceEntity,
+  RecordEntity,
+  SystemNotifyEntity,
+  TopicEntity,
+  TopicLikeEntity,
+  UserAppConfigEntity,
+  UserNotifyEntity,
+} from './';
 
 @Entity('user')
 export class UserEntity {
@@ -81,6 +90,9 @@ export class UserEntity {
 
   @OneToMany('system_notify', 'user')
   systemNotifies?: SystemNotifyEntity[];
+
+  @OneToMany('user_notify', 'user')
+  userNotifies?: UserNotifyEntity[];
 
   @OneToOne('user_app_config', 'user')
   userAppConfig: UserAppConfigEntity;

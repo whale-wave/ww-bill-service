@@ -1,7 +1,7 @@
 {
-  "author": "Avan",
+  "author": "Unnamed",
   "title": "Whale Wave Bill",
-  "date": "2024-12-09T16:13:24.097Z",
+  "date": "2024-12-10T03:53:50.276Z",
   "tables": [
     {
       "id": 0,
@@ -164,8 +164,8 @@
     {
       "id": 1,
       "name": "check_in",
-      "x": -478,
-      "y": -193.99999999999997,
+      "x": -189.70473966930047,
+      "y": -475.20702355636354,
       "fields": [
         {
           "name": "id",
@@ -244,8 +244,8 @@
     {
       "id": 2,
       "name": "follow",
-      "x": -492,
-      "y": 85.99999999999989,
+      "x": -465.3904791828779,
+      "y": -478.3356337427537,
       "fields": [
         {
           "name": "id",
@@ -324,8 +324,8 @@
     {
       "id": 3,
       "name": "comment",
-      "x": -143,
-      "y": 286,
+      "x": -689.3032611947566,
+      "y": 418.3731399042106,
       "fields": [
         {
           "name": "id",
@@ -431,8 +431,8 @@
     {
       "id": 4,
       "name": "topic",
-      "x": 311,
-      "y": 278,
+      "x": -637.0039470451998,
+      "y": -198.1462605898813,
       "fields": [
         {
           "name": "id",
@@ -539,8 +539,8 @@
     {
       "id": 5,
       "name": "topic_like",
-      "x": 335,
-      "y": -42,
+      "x": -640.9687590947575,
+      "y": 124.22996923656535,
       "fields": [
         {
           "name": "id",
@@ -633,8 +633,8 @@
     {
       "id": 6,
       "name": "record",
-      "x": 115,
-      "y": -469.99999999999994,
+      "x": 161.3407795578912,
+      "y": -165.53668792460695,
       "fields": [
         {
           "name": "id",
@@ -766,8 +766,8 @@
     {
       "id": 7,
       "name": "category",
-      "x": 361,
-      "y": -453,
+      "x": 161.1995305646933,
+      "y": -493.63328549453416,
       "fields": [
         {
           "name": "id",
@@ -871,8 +871,8 @@
     {
       "id": 8,
       "name": "budget",
-      "x": 618,
-      "y": -429.0000000000001,
+      "x": 459.2527654551934,
+      "y": -523.2022849587502,
       "fields": [
         {
           "name": "id",
@@ -994,20 +994,36 @@
     {
       "id": 9,
       "name": "system_notify",
-      "x": 664,
-      "y": -1.9999999999998863,
+      "x": 475.9517507821074,
+      "y": -111.35864043134325,
       "fields": [
         {
           "name": "id",
-          "type": "INTEGER",
+          "type": "UUID",
           "default": "",
           "check": "",
           "primary": true,
           "unique": true,
           "notNull": true,
-          "increment": true,
+          "increment": false,
           "comment": "",
-          "id": 0
+          "id": 0,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 1,
+          "size": 255,
+          "values": []
         },
         {
           "name": "content",
@@ -1019,20 +1035,21 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 1,
-          "size": 255
+          "id": 2,
+          "size": 255,
+          "values": []
         },
         {
-          "name": "isGlobal",
-          "type": "BOOLEAN",
+          "name": "type",
+          "type": "INTEGER",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 2,
+          "id": 3,
           "size": "",
           "values": []
         },
@@ -1046,8 +1063,23 @@
           "notNull": false,
           "increment": false,
           "comment": "",
-          "id": 3,
-          "size": 255
+          "id": 4,
+          "size": 255,
+          "values": []
+        },
+        {
+          "name": "isBroadcast",
+          "type": "BOOLEAN",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 5,
+          "size": "",
+          "values": []
         },
         {
           "name": "createdAt",
@@ -1059,7 +1091,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 4,
+          "id": 6,
           "size": "",
           "values": []
         },
@@ -1073,7 +1105,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 5,
+          "id": 7,
           "size": "",
           "values": []
         },
@@ -1087,7 +1119,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 6,
+          "id": 8,
           "size": "",
           "values": []
         }
@@ -1100,8 +1132,8 @@
     {
       "id": 10,
       "name": "user_app_config",
-      "x": 625,
-      "y": 404.9999999999999,
+      "x": -180.12570937220175,
+      "y": 279.1106242547195,
       "fields": [
         {
           "name": "id",
@@ -1196,8 +1228,8 @@
     {
       "id": 11,
       "name": "invoice",
-      "x": 925.0000000000002,
-      "y": -508,
+      "x": -184.17543492126424,
+      "y": 597.7394853179059,
       "fields": [
         {
           "name": "id",
@@ -1344,8 +1376,8 @@
     {
       "id": 12,
       "name": "asset",
-      "x": 309,
-      "y": 635,
+      "x": 400.09720457645517,
+      "y": 583.7470850832331,
       "fields": [
         {
           "name": "id",
@@ -1478,8 +1510,8 @@
     {
       "id": 13,
       "name": "asset_group",
-      "x": 596.9999999999998,
-      "y": 715.9999999999999,
+      "x": 126.22400138277567,
+      "y": 586.5665058675519,
       "fields": [
         {
           "name": "id",
@@ -1666,8 +1698,8 @@
     {
       "id": 14,
       "name": "asset_record",
-      "x": 884,
-      "y": 708,
+      "x": 688.5835477437936,
+      "y": 569.2130875028533,
       "fields": [
         {
           "name": "id",
@@ -1790,6 +1822,20 @@
           "values": []
         },
         {
+          "name": "assetId",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 9,
+          "size": "",
+          "values": []
+        },
+        {
           "name": "userId",
           "type": "INTEGER",
           "default": "",
@@ -1799,7 +1845,7 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 9,
+          "id": 10,
           "size": "",
           "values": []
         }
@@ -1812,8 +1858,8 @@
     {
       "id": 15,
       "name": "asset_statistical_record",
-      "x": 1159.9999999999998,
-      "y": 809.0000000000001,
+      "x": 170.86010075903414,
+      "y": 279.1765711620934,
       "fields": [
         {
           "name": "id",
@@ -1906,8 +1952,8 @@
     {
       "id": 16,
       "name": "user_notify",
-      "x": 931.9999999999998,
-      "y": -7,
+      "x": 755.4876334319022,
+      "y": -53.70346312713451,
       "fields": [
         {
           "name": "id",
@@ -1925,7 +1971,7 @@
         },
         {
           "name": "systemNotifyId",
-          "type": "INTEGER",
+          "type": "UUID",
           "default": "",
           "check": "",
           "primary": false,
@@ -1934,6 +1980,62 @@
           "increment": false,
           "comment": "",
           "id": 1,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "isRead",
+          "type": "BOOLEAN",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 2,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "createdAt",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 3,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "updatedAt",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 4,
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "userId",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": 5,
           "size": "",
           "values": []
         }
@@ -2010,6 +2112,226 @@
       "deleteConstraint": "No action",
       "name": "comment_userId_fk",
       "id": 5
+    },
+    {
+      "startTableId": 10,
+      "startFieldId": 5,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "one_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "user_app_config_userId_fk",
+      "id": 6
+    },
+    {
+      "startTableId": 6,
+      "startFieldId": 8,
+      "endTableId": 7,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "record_categoryId_fk",
+      "id": 7
+    },
+    {
+      "startTableId": 6,
+      "startFieldId": 7,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "record_userId_fk",
+      "id": 8
+    },
+    {
+      "startTableId": 7,
+      "startFieldId": 6,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "category_userId_fk",
+      "id": 9
+    },
+    {
+      "startTableId": 8,
+      "startFieldId": 7,
+      "endTableId": 7,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "budget_categoryId_fk",
+      "id": 10
+    },
+    {
+      "startTableId": 8,
+      "startFieldId": 6,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "budget_userId_fk",
+      "id": 11
+    },
+    {
+      "startTableId": 11,
+      "startFieldId": 9,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "invoice_userId_fk",
+      "id": 12
+    },
+    {
+      "startTableId": 5,
+      "startFieldId": 5,
+      "endTableId": 4,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "topic_like_topicId_fk",
+      "id": 13
+    },
+    {
+      "startTableId": 4,
+      "startFieldId": 6,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "topic_userId_fk",
+      "id": 14
+    },
+    {
+      "startTableId": 5,
+      "startFieldId": 4,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "topic_like_userId_fk",
+      "id": 15
+    },
+    {
+      "startTableId": 3,
+      "startFieldId": 5,
+      "endTableId": 4,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "comment_topicId_fk",
+      "id": 16
+    },
+    {
+      "startTableId": 12,
+      "startFieldId": 8,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "asset_userId_fk",
+      "id": 17
+    },
+    {
+      "startTableId": 12,
+      "startFieldId": 7,
+      "endTableId": 13,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "asset_assetGroupId_fk",
+      "id": 18
+    },
+    {
+      "startTableId": 13,
+      "startFieldId": 12,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "asset_group_userId_fk",
+      "id": 19
+    },
+    {
+      "startTableId": 15,
+      "startFieldId": 5,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "asset_statistical_record_userId_fk",
+      "id": 20
+    },
+    {
+      "startTableId": 14,
+      "startFieldId": 10,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "asset_record_userId_fk",
+      "id": 21
+    },
+    {
+      "startTableId": 14,
+      "startFieldId": 9,
+      "endTableId": 12,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "asset_record_assetId_fk",
+      "id": 22
+    },
+    {
+      "startTableId": 9,
+      "startFieldId": 8,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "system_notify_userId_fk",
+      "id": 23
+    },
+    {
+      "startTableId": 16,
+      "startFieldId": 5,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "user_notify_userId_fk",
+      "id": 24
+    },
+    {
+      "startTableId": 16,
+      "startFieldId": 1,
+      "endTableId": 9,
+      "endFieldId": 0,
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "user_notify_systemNotifyId_fk",
+      "id": 25
     }
   ],
   "notes": [],

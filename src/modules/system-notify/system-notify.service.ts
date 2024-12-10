@@ -27,7 +27,7 @@ export class SystemNotifyService {
     }
     systemNotify.user = user;
     systemNotify.content = content;
-    systemNotify.isGlobal = isGlobal;
+    systemNotify.isBroadcast = isGlobal;
     systemNotify.coverPicture = coverPicture;
     return this.systemNotifyRepository.save(systemNotify);
   }
