@@ -22,10 +22,10 @@ export class SystemNotifyEntity {
   @Column({ type: 'varchar', default: '' })
   coverPicture?: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @ManyToOne('user', 'systemNotifies')
