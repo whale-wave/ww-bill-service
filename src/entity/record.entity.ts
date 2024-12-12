@@ -17,7 +17,7 @@ export class RecordEntity {
   @Column()
   remark: string;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: 'timestamp' })
   time: string;
 
   @Column({ nullable: false, enum: ['sub', 'add'] })
@@ -26,10 +26,10 @@ export class RecordEntity {
   @Column({ nullable: false })
   amount: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @ManyToOne('user', 'records')

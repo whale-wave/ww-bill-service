@@ -1,11 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { BaseColumn } from './utils';
 import { UserNotifyEntity } from './user-notify.entity';
 
 export enum SystemNotifyEntityType {
@@ -14,7 +16,10 @@ export enum SystemNotifyEntityType {
 }
 
 @Entity('system_notify')
-export class SystemNotifyEntity extends BaseColumn {
+export class SystemNotifyEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @Column({ type: 'int', nullable: false })
   type: SystemNotifyEntityType;
 
@@ -29,6 +34,12 @@ export class SystemNotifyEntity extends BaseColumn {
 
   @Column({ type: 'boolean', nullable: false, default: true })
   isBroadcast: boolean;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @ManyToOne('user', 'systemNotifies')
   user: UserEntity;

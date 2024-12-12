@@ -13,13 +13,13 @@ export class CheckInEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column('timestamp')
   checkInTime: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @ManyToOne('user', 'checkIns')
