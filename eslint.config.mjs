@@ -24,7 +24,7 @@ export default antf({
       multilineDetection: "brackets"
     }],
     "no-console": ["error", {
-      allow: ["warn", "error"]
+      allow: ["warn", "error", "info"]
     }],
     "node/prefer-global/process": ["error", "always"],
     "ts/consistent-type-imports": "off"

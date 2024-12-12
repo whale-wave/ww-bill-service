@@ -24,6 +24,7 @@ import { InvoiceModule } from './modules/invoice/invoice.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { AssetModule } from './modules/asset/asset.module';
 import { TaskModule } from './modules/task/task.module';
+import { SocketModule } from './modules/socket/socket.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { TaskModule } from './modules/task/task.module';
     BudgetModule,
     AssetModule,
     TaskModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],
