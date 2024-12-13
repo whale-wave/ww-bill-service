@@ -27,6 +27,7 @@
     "migration": "ts-node migrations/index.ts"
   },
   "dependencies": {
+    "@avanlan/logger": "^0.0.9",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
@@ -55,6 +56,7 @@
     "qiniu": "7.4.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
     "svg-captcha": "1.4.0",
     "typeorm": "0.2.41"
   },

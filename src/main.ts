@@ -11,10 +11,12 @@ import { json, urlencoded } from 'express';
 import * as session from 'express-session';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
+import { expressHttpLogger } from '@avanlan/logger';
 import { AppModule } from './app.module';
 import config from './config';
 import { UserService } from './modules/user/user.service';
 import { AssetService } from './modules/asset/asset.service';
+import { logger } from './utils';
 
 dayjs.extend(isBetween);
 
@@ -22,6 +24,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
+  app.use(expressHttpLogger(logger));
   // app.enable();
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
   app.setGlobalPrefix('api');

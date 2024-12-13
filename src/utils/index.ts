@@ -19,3 +19,4 @@ export * from './queryBuilderHelper';
 export * from './auth';
 export * from './captcha';
 export * from './createDefaultCategory';
+export * from './logger';

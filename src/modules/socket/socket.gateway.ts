@@ -1,33 +1,30 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { logger } from '../../utils';
 
-@WebSocketGateway(3002)
-export class SocketGateway {
-  @SubscribeMessage('createSocket')
-  create(@MessageBody() createSocketDto: any) {
-    console.info(createSocketDto);
-    // return this.socketService.create(createSocketDto);
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+export class SocketGateway implements OnGatewayInit {
+  @WebSocketServer()
+  server: Server;
+
+  afterInit(server: Server) {
+    server.emit('ping', { payload: 'ping', form: 'server' });
+    logger.daily.info('Socket server initialized');
   }
 
-  @SubscribeMessage('findAllSocket')
-  findAll() {
-    // return this.socketService.findAll();
+  @SubscribeMessage('message')
+  handleMessage(client: Socket, payload: any): void {
+    client.emit('message', { payload, form: 'server', action: 'message' });
+    logger.daily.info({ payload, form: 'server', action: 'message' });
   }
 
-  @SubscribeMessage('findOneSocket')
-  findOne(@MessageBody() id: number) {
-    console.info(id);
-    // return this.socketService.findOne(id);
-  }
-
-  @SubscribeMessage('updateSocket')
-  update(@MessageBody() updateSocketDto: any) {
-    console.info(updateSocketDto);
-    // return this.socketService.update(updateSocketDto.id, updateSocketDto);
-  }
-
-  @SubscribeMessage('removeSocket')
-  remove(@MessageBody() id: number) {
-    console.info(id);
-    // return this.socketService.remove(id);
+  @SubscribeMessage('update')
+  handleUpdate(@MessageBody() payload: any): void {
+    this.server.emit('update', { payload, form: 'server', action: 'update' });
+    logger.daily.info({ payload, form: 'server', action: 'update' });
   }
 }
