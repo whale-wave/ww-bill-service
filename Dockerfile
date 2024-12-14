@@ -1,12 +1,10 @@
-FROM node:18-alpine
-RUN npm i -g npm@8.6.0 && \
-#    npm config set registry https://registry.npmmirror.com && \
-    npm i -g pnpm@6 && \
-    pnpm i -g yarn
+FROM node:20-alpine
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm i -g pnpm
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm i
 COPY . .
-RUN yarn build
+RUN pnpm build
 EXPOSE 3001
 CMD ["node", "dist/src/main.js"]
