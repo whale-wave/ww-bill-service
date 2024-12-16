@@ -21,9 +21,11 @@ const {
   DEFAULT_ADMIN_USERNAME,
   DEFAULT_ADMIN_PASSWORD,
   COMPANY_EMAIL,
+  DOUBLE_CSRF_SECRET,
 } = process.env;
 
 export default {
+  doubleCsrfSecret: DOUBLE_CSRF_SECRET || 'ww-bill-service-double-csrf-secret',
   secret: SECRET || '',
   emailPassword: EMAIL_PASSWORD || '',
   token: {
