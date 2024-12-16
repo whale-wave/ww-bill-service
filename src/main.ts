@@ -12,7 +12,6 @@ import * as session from 'express-session';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { expressHttpLogger } from '@avanlan/logger';
-import { doubleCsrf } from 'csrf-csrf';
 import { AppModule } from './app.module';
 import config from './config';
 import { UserService } from './modules/user/user.service';
@@ -31,10 +30,6 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  const { doubleCsrfProtection } = doubleCsrf({
-    getSecret: () => config.doubleCsrfSecret,
-  });
-  app.use(doubleCsrfProtection);
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.use(expressHttpLogger(logger));
