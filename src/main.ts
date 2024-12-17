@@ -13,6 +13,7 @@ import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
 import { expressHttpLogger } from '@avanlan/logger';
 import * as compression from 'compression';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import config from './config';
 import { UserService } from './modules/user/user.service';
@@ -24,6 +25,7 @@ dayjs.extend(isBetween);
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.use(helmet());
   app.use(compression());
   app.use(
     session({
