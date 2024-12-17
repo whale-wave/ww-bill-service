@@ -1,4 +1,5 @@
 FROM node:20-alpine
+# RUN npm i -g pnpm
 RUN npm config set registry https://registry.npmmirror.com && \
     npm i -g pnpm
 WORKDIR /app

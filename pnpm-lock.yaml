@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@avanlan/logger':
-        specifier: ^0.0.9
-        version: 0.0.9
+        specifier: 0.1.0
+        version: 0.1.0
       '@nestjs/common':
         specifier: ^10.0.0
         version: 10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -181,7 +181,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.2
       eslint:
-        specifier: 9.17.0
+        specifier: ^9.17.0
         version: 9.17.0
       globals:
         specifier: ^15.13.0
@@ -299,8 +299,8 @@ packages:
   '@antfu/utils@0.7.10':
     resolution: {integrity: sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==}
 
-  '@avanlan/logger@0.0.9':
-    resolution: {integrity: sha512-wl/otjXC/rmWXzmEbrZQWniyXrHHF2UUqaTM3sQGBVh8EgBI5FL4e2d+2WqOEP+aApco4z16lyb0HzK7mh2UEg==}
+  '@avanlan/logger@0.1.0':
+    resolution: {integrity: sha512-CgC6so0xQrq79RvsjksQzdJW2h4BSevSxTlckdCnwljjSS9d+1ukSxEZhNk7BcIxdDWCtXARqVmGYbStVRJfHg==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -4706,9 +4706,9 @@ snapshots:
 
   '@antfu/utils@0.7.10': {}
 
-  '@avanlan/logger@0.0.9':
+  '@avanlan/logger@0.1.0':
     dependencies:
-      chalk: 4.1.2
+      picocolors: 1.1.1
       triple-beam: 1.4.1
       winston: 3.17.0
       winston-daily-rotate-file: 5.0.0(winston@3.17.0)
