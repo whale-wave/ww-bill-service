@@ -25,6 +25,13 @@ dayjs.extend(isBetween);
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.enableCors({
+    origin: [
+      /^https?:\/\/localhost(:\d+)?$/,
+      /^https?:\/\/([\w-]+\.)*easyhappy\.top$/,
+    ],
+    credentials: true,
+  });
   app.use(helmet());
   app.use(compression());
   app.use(
@@ -38,7 +45,13 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.use(expressHttpLogger(logger));
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
   app.setGlobalPrefix('api');
 
   const docConfig = new DocumentBuilder()
