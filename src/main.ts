@@ -1,3 +1,4 @@
+import { expressHttpLogger } from '@avanlan/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -7,17 +8,16 @@ import {
   SwaggerDocumentOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
-import { json, urlencoded } from 'express';
-import * as session from 'express-session';
+import * as compression from 'compression';
 import * as dayjs from 'dayjs';
 import * as isBetween from 'dayjs/plugin/isBetween';
-import { expressHttpLogger } from '@avanlan/logger';
-import * as compression from 'compression';
+import { json, urlencoded } from 'express';
+import * as session from 'express-session';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import config from './config';
-import { UserService } from './modules/user/user.service';
 import { AssetService } from './modules/asset/asset.service';
+import { UserService } from './modules/user/user.service';
 import { logger } from './utils';
 
 dayjs.extend(isBetween);

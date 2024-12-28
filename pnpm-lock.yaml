@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       '@avanlan/logger':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: 0.1.4
+        version: 0.1.4
       '@nestjs/axios':
-        specifier: 3.1.3
+        specifier: ^3.1.3
         version: 3.1.3(@nestjs/common@10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.9)(rxjs@7.8.1)
       '@nestjs/common':
         specifier: ^10.0.0
@@ -42,7 +42,7 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2(@nestjs/common@10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.15)(express@4.21.2)
       '@nestjs/terminus':
-        specifier: 10.2.3
+        specifier: ^10.2.3
         version: 10.2.3(@nestjs/axios@3.1.3(@nestjs/common@10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.9)(rxjs@7.8.1))(@nestjs/common@10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.15)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.15)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.2.41(pg@8.13.1)))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.2.41(pg@8.13.1))
       '@nestjs/throttler':
         specifier: ^6.3.0
@@ -57,7 +57,7 @@ importers:
         specifier: 6.16.0
         version: 6.16.0(co@4.6.0)
       axios:
-        specifier: 1.7.9
+        specifier: ^1.7.9
         version: 1.7.9
       class-transformer:
         specifier: ^0.5.1
@@ -327,8 +327,8 @@ packages:
   '@antfu/utils@0.7.10':
     resolution: {integrity: sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==}
 
-  '@avanlan/logger@0.1.0':
-    resolution: {integrity: sha512-CgC6so0xQrq79RvsjksQzdJW2h4BSevSxTlckdCnwljjSS9d+1ukSxEZhNk7BcIxdDWCtXARqVmGYbStVRJfHg==}
+  '@avanlan/logger@0.1.4':
+    resolution: {integrity: sha512-LtaZsxoqHHz5R0fSc/u9/luEA4XL4yNlHpMlnOQr3/D5mh7MzqOQsR0ntd34Jlul0XqqdXmtkCo/rjGtSs3hXw==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -939,6 +939,9 @@ packages:
 
   '@dabh/diagnostics@2.0.3':
     resolution: {integrity: sha512-hrlQOIi7hAfzsMqlGSFyVucrx38O+j6wiGOf//H2ecvIEqYN4ADBSS2iLMh5UFyDunCNniUIPk/q3riFv45xRA==}
+
+  '@date-fns/tz@1.2.0':
+    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
 
   '@es-joy/jsdoccomment@0.48.0':
     resolution: {integrity: sha512-G6QUWIcC+KvSwXNsJyDTHvqUdNoAVJPPgkc3+Uk4WBKqZvoXhlvazOgm9aL0HwihJLQf0l+tOE2UFzXBqCqgDw==}
@@ -2385,6 +2388,9 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   dateformat@2.2.0:
     resolution: {integrity: sha512-GODcnWq3YGoTnygPfi02ygEiRxqUxpJwuRHjdhJYuxpcZmDq4rjBiXYmbCCzStxo176ixfLT6i4NPwQooRySnw==}
@@ -5730,8 +5736,10 @@ snapshots:
 
   '@antfu/utils@0.7.10': {}
 
-  '@avanlan/logger@0.1.0':
+  '@avanlan/logger@0.1.4':
     dependencies:
+      '@date-fns/tz': 1.2.0
+      date-fns: 4.1.0
       picocolors: 1.1.1
       triple-beam: 1.4.1
       winston: 3.17.0
@@ -6587,6 +6595,8 @@ snapshots:
       colorspace: 1.1.4
       enabled: 2.0.0
       kuler: 2.0.0
+
+  '@date-fns/tz@1.2.0': {}
 
   '@es-joy/jsdoccomment@0.48.0':
     dependencies:
@@ -8295,6 +8305,8 @@ snapshots:
   css-what@6.1.0: {}
 
   cssesc@3.0.0: {}
+
+  date-fns@4.1.0: {}
 
   dateformat@2.2.0: {}
 
