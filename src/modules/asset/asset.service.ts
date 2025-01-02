@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindConditions, Repository } from 'typeorm';
 import * as dayjs from 'dayjs';
-import { mathHelper } from '../../utils';
+import { Between, FindConditions, Repository } from 'typeorm';
 import { AssetEntity, AssetGroupAssetType, AssetGroupEntity, AssetGroupType, AssetRecordEntity, AssetStatisticalRecord, AssetStatisticalRecordType } from '../../entity';
 import { UserEntity } from '../../entity/user.entity';
+import { mathHelper } from '../../utils';
 import { UserService } from '../user/user.service';
 import { AdjustAssetDto, CreateAssetDto } from './dto';
 
@@ -21,6 +21,7 @@ export class AssetService {
     private assetRecordRepository: Repository<AssetRecordEntity>,
     @InjectRepository(AssetStatisticalRecord)
     private assetStatisticalRecordRepository: Repository<AssetStatisticalRecord>,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
   ) {}
 

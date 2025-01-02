@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -25,6 +25,6 @@ export class CreateSystemNotifyDto {
 
   @ApiPropertyOptional({ description: '封面图片', default: '' })
   @IsOptional()
-  @IsUrl({ message: '图片必须为url' })
+  @IsUrl({}, { message: '图片必须为url' })
   coverPicture?: string;
 }

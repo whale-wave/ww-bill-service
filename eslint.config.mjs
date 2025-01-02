@@ -1,32 +1,32 @@
-import antf from "@antfu/eslint-config";
-import globals from "globals";
+import antf from '@antfu/eslint-config';
+import globals from 'globals';
 
 export default antf({
-  ignores: ["tsconfig.json", "test", "yarn.lock", "package.json", "eslint.config.mjs", ".husky", "src/migrations", "migrations"]
+  ignores: ['tsconfig.json', 'test', 'yarn.lock', 'package.json', 'eslint.config.mjs', '.husky', 'src/migrations', 'migrations'],
 }, {
   languageOptions: {
     globals: {
       ...globals.jest,
-      ...globals.node
-    }
+      ...globals.node,
+    },
   },
   rules: {
-    "style/semi": ["error", "always"],
-    "style/member-delimiter-style": ["error", {
+    'style/semi': ['error', 'always'],
+    'style/member-delimiter-style': ['error', {
       multiline: {
-        delimiter: "semi",
-        requireLast: true
+        delimiter: 'semi',
+        requireLast: true,
       },
       singleline: {
-        delimiter: "semi",
-        requireLast: false
+        delimiter: 'semi',
+        requireLast: false,
       },
-      multilineDetection: "brackets"
+      multilineDetection: 'brackets',
     }],
-    "no-console": ["error", {
-      allow: ["warn", "error"]
+    'no-console': ['error', {
+      allow: ['warn', 'error', 'info'],
     }],
-    "node/prefer-global/process": ["error", "always"],
-    "ts/consistent-type-imports": "off"
-  }
+    'node/prefer-global/process': ['error', 'always'],
+    'ts/consistent-type-imports': 'off',
+  },
 });

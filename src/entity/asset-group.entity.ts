@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { AssetEntity } from './asset.entity';
 import { UserEntity } from './user.entity';
 import { BaseColumn } from './utils';
-import { AssetEntity } from './asset.entity';
 
 export enum AssetGroupAssetType {
   NORMAL = 'normal',

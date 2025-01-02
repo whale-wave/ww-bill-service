@@ -26,14 +26,14 @@ export class CreateRecordDto {
   categoryId: string;
 
   @IsNotEmpty({ message: '日期不能为空' })
-  @IsDateString({ message: '请选择日期' })
+  @IsDateString({}, { message: '请选择日期' })
   @ApiProperty({ type: 'string', format: 'date-time', description: '记账时间' })
   time: string;
 
   @IsNotEmpty({ message: '类型不能为空' })
   @IsEnum(['sub', 'add'], { message: '请选择类型' })
   @ApiProperty({
-    type: 'enum',
+    type: 'string',
     enum: ['add', 'sub'],
     example: 'add',
     description: '记账类型',
